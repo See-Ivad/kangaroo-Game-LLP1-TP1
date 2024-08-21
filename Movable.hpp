@@ -44,9 +44,9 @@ class Movable{
 		}
 	}
 
-	bool move(){
-
-		position = position + velocity;
+	bool move(Vector2f vel){
+		this->velocity = vel;
+		position = position + vel;
 		body.setPosition(position);
 
 		return true;
@@ -81,6 +81,14 @@ class Movable{
 
 };
 
+class Player : public Movable {
+public:
+    void updatePosition() {
+        if (Keyboard::isKeyPressed(Keyboard::Left)){
+            move(Vector2f(-1.0f, 0.0f));
+        }
+    }
+};
 
 
 #endif /* MOVABLE_HPP_ */
