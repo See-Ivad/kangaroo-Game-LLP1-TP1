@@ -9,6 +9,7 @@
 #define MOVABLE_HPP_
 
 #include <iostream>
+#include <chrono>
 using namespace std;
 
 #include <SFML/Graphics.hpp>
@@ -16,15 +17,12 @@ using namespace std;
 using namespace sf;
 
 class Movable{
-
-	protected:
-
+protected:
 	Vector2f position;
 	Vector2f velocity;
 	RectangleShape body;
 
-	public:
-
+public:
 	Movable();
 
 	Movable(Vector2f position, Vector2f velocity, Vector2f bodySize){
@@ -44,16 +42,26 @@ class Movable{
 		}
 	}
 
+	float deltaTimeGetter(){
+		static auto last_frame_time = std::chrono::steady_clock::now();
+		auto current_frame_time = std::chrono::steady_clock::now();
+
+		std::chrono::duration<float> delta = current_frame_time - last_frame_time;
+		last_frame_time = current_frame_time;
+
+		return delta.count();
+	}
+
 	bool move(Vector2f vel){
+		float delta_time = deltaTimeGetter();
 		this->velocity = vel;
-		position = position + vel;
+		position = position + vel * delta_time;
 		body.setPosition(position);
 
 		return true;
 	};
 
 	bool setOriginMedle(){
-
 		Vector2f sizeBody(body.getSize());
 		Vector2f medle(sizeBody.x/2,sizeBody.y/2);
 
@@ -61,7 +69,6 @@ class Movable{
 	}
 
 	bool setTexture(Texture *texture){
-
 		body.setTexture(texture);
 
 		return true;
@@ -78,11 +85,16 @@ class Movable{
 	RectangleShape getBody(){
 		return body;
 	};
-
 };
 
 class Player : public Movable {
 public:
+	void calculateGravity(float &jump_speed){
+		float delta_time = deltaTimeGetter();
+		float gravity = jump_speed * -0.5f * delta_time;
+		jump_speed += gravity * delta_time;
+	}
+
     void updatePosition() {
         if (Keyboard::isKeyPressed(Keyboard::Left)){
             move(Vector2f(-1.0f, 0.0f));
