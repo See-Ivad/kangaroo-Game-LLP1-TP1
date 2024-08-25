@@ -15,7 +15,7 @@ protected:
 	Vector2f position;
 	Vector2f velocity;
 	RectangleShape body;
-
+	const int tile_size = 24;
 public:
 	Movable();
 
@@ -53,64 +53,32 @@ public:
 		std::chrono::duration<float> delta = current_frame_time - last_frame_time;
 		last_frame_time = current_frame_time;
 
-		const float targetFrameTime = 1.0f / 60.0f;
-		return delta.count() / targetFrameTime;
+		return delta.count();
 	}
 
 	bool move(RenderWindow *rWindow){
 		float delta_time = deltaTimeGetter();
-		float gravity = 3;
+		float gravity = tile_size * 128 * delta_time;
 
 		if(testCollision(rWindow)){
-			if(velocity.x < 0 && velocity.y > 0){
-				velocity.x = ((sqrt((velocity.x * -1.0) + velocity.y) * -1.0) / 2);
-				velocity.y = (sqrt((velocity.x * -1.0) + velocity.y) / 2);
-
-				cout << "x = " << velocity.x << endl;
-				cout << "y = " << velocity.y << endl;
-			}
-			if(velocity.x < 0 && velocity.y < 0){
-				velocity.x = ((sqrt((velocity.x * -1.0) + (velocity.y * -1)) * -1.0) / 2);
-				velocity.y = ((sqrt((velocity.x * -1.0) + (velocity.y * -1)) * -1.0) / 2);
-
-				cout << "x = " << velocity.x << endl;
-				cout << "y = " << velocity.y << endl;
-			}
-			if(velocity.x > 0 && velocity.y > 0){
-				velocity.y = ((sqrt((velocity.y * 1.0) + velocity.x)) / 2);
-				velocity.x = (sqrt((velocity.y * 1.0) + velocity.y) / 2);
-
-				cout << "x = " << velocity.x << endl;
-				cout << "y = " << velocity.y << endl;
-			}
-			if(velocity.x > 0 && velocity.y < 0){
-				velocity.y = ((sqrt((velocity.y * -1.0) + velocity.x) * -1.0) / 2);
-				velocity.x = (sqrt((velocity.y * -1.0) + velocity.x) / 2);
-
-				cout << "x = " << velocity.x << endl;
-				cout << "y = " << velocity.y << endl;
-			}
 			velocity.y += gravity;
-			position = position + velocity * delta_time;
-			body.setPosition(position);
-
-			if(!testCollision(rWindow)){
-				velocity.x *= -1;
-				velocity.y *= -1;
-				position += velocity;
-				body.setPosition(position);
-			}
-			velocity.x = 0;
-			velocity.y = 0;
 		}
+		position += velocity * delta_time;
+		body.setPosition(position);
+
+		velocity.x = 0;
+
+		if(!testCollision(rWindow)){
+			velocity.y = 0;
+			velocity.x = 0;
+		}
+
 		return true;
 	}
 
-	bool setOriginMiddle(){
-		Vector2f sizeBody(body.getSize());
-		Vector2f medle(sizeBody.x/2,sizeBody.y/2);
-
-		return true;
+	void setOriginMiddle() {
+		Vector2f sizeBody = body.getSize();
+		body.setOrigin(sizeBody.x / 2, sizeBody.y / 2);
 	}
 
 	bool setVelocityY(int y){
@@ -147,23 +115,86 @@ public:
 	}
 };
 
-class Player : public Movable{
+class Player: public Movable{
 public:
+	Texture kangaroo_texture;
+	Sprite kangaroo_sprite;
+	bool has_gloves = true;
+	IntRect kangaroo_rectangle;
+	Clock animation_clock;
+	float frame_duration = 0.25f;
+
 	Player(Vector2f position, Vector2f velocity, Vector2f bodySize)
 	: Movable(position, velocity, bodySize){
+		loadTexture();
+		kangaroo_sprite.setTexture(kangaroo_texture);
+		kangaroo_sprite.setScale(2, 2);
+	}
+
+	void loadTexture(){
+		if(has_gloves){
+			kangaroo_texture.loadFromFile("spritesheets/kangaroo.png");
+		}
+		else{
+			kangaroo_texture.loadFromFile("spritesheets/no_gloves.png");
+		}
+		body.setTexture(&kangaroo_texture);
+	}
+
+
+	void updateSpritesheetPosition(int first_frame){
+	    int final_frame = first_frame + tile_size;
+
+	    if(animation_clock.getElapsedTime().asSeconds() > frame_duration){
+	        if(kangaroo_rectangle.left == first_frame){
+	            kangaroo_rectangle.left = final_frame;
+	        }
+	        else{
+	            kangaroo_rectangle.left = first_frame;
+	        }
+
+	        animation_clock.restart();
+	    }
+	}
+
+	void changeSprites(){
+		kangaroo_sprite.setPosition(position);
+
+		kangaroo_rectangle.width = 24;
+		kangaroo_rectangle.height = 24;
+
+		if(velocity.x != 0.0f && velocity.y == 0.0f){
+			updateSpritesheetPosition(48);
+		}
+
+		else{
+			kangaroo_rectangle.left = 0;
+			kangaroo_rectangle.top = 0;
+		}
+
+		kangaroo_sprite.setTextureRect(kangaroo_rectangle);
+	}
+
+
+	void draw(RenderWindow &window) {
+		window.draw(kangaroo_sprite);
 	}
 
 	bool controls(RenderWindow *rWindow){
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-			velocity.y = -6;
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-			velocity.y = 1.5;
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-			velocity.x = -1.5;
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-			velocity.x = 1.5;
-
 		move(rWindow);
+
+		if((sf::Keyboard::isKeyPressed(sf::Keyboard::W)
+				|| sf::Keyboard::isKeyPressed(sf::Keyboard::Up)
+				|| sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) && !testCollision(rWindow))
+			velocity.y += tile_size * -24;
+		if((sf::Keyboard::isKeyPressed(sf::Keyboard::S)
+				|| sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) && testCollision(rWindow))
+			velocity.y = tile_size * 24;
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			velocity.x = tile_size * -6;
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			velocity.x = tile_size * 6;
+
 		return true;
 	}
 };
