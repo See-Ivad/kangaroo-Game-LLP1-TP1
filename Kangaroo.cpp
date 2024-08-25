@@ -1,7 +1,8 @@
 #include "Movable.hpp"
 #include "Obstacle.hpp"
-
+#include "Player.hpp"
 #include <iostream>
+
 using namespace std;
 
 #include <SFML/Graphics.hpp>

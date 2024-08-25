@@ -2,7 +2,6 @@
 #define MOVABLE_HPP_
 
 #include <iostream>
-#include <cmath>
 #include <chrono>
 using namespace std;
 
@@ -16,6 +15,10 @@ protected:
 	Vector2f velocity;
 	RectangleShape body;
 	const int tile_size = 24;
+
+	Clock animation_clock;
+	float frame_duration = 0.125f;
+	IntRect textureRect = body.getTextureRect();
 public:
 	Movable();
 
@@ -81,6 +84,22 @@ public:
 		body.setOrigin(sizeBody.x / 2, sizeBody.y / 2);
 	}
 
+	void updateSpritesheetPosition(int first_frame){
+		int final_frame = first_frame + tile_size;
+
+		if(animation_clock.getElapsedTime().asSeconds() > frame_duration){
+			if(textureRect.left == first_frame){
+				textureRect.left = final_frame;
+			}
+			else{
+				textureRect.left = first_frame;
+			}
+
+			animation_clock.restart();
+		}
+	}
+
+
 	bool setVelocityY(int y){
 		this->velocity.y = y;
 		return true;
@@ -112,90 +131,6 @@ public:
 
 	RectangleShape getBody(){
 		return body;
-	}
-};
-
-class Player: public Movable{
-public:
-	Texture kangaroo_texture;
-	Sprite kangaroo_sprite;
-	bool has_gloves = true;
-	IntRect kangaroo_rectangle;
-	Clock animation_clock;
-	float frame_duration = 0.25f;
-
-	Player(Vector2f position, Vector2f velocity, Vector2f bodySize)
-	: Movable(position, velocity, bodySize){
-		loadTexture();
-		kangaroo_sprite.setTexture(kangaroo_texture);
-		kangaroo_sprite.setScale(2, 2);
-	}
-
-	void loadTexture(){
-		if(has_gloves){
-			kangaroo_texture.loadFromFile("spritesheets/kangaroo.png");
-		}
-		else{
-			kangaroo_texture.loadFromFile("spritesheets/no_gloves.png");
-		}
-		body.setTexture(&kangaroo_texture);
-	}
-
-
-	void updateSpritesheetPosition(int first_frame){
-	    int final_frame = first_frame + tile_size;
-
-	    if(animation_clock.getElapsedTime().asSeconds() > frame_duration){
-	        if(kangaroo_rectangle.left == first_frame){
-	            kangaroo_rectangle.left = final_frame;
-	        }
-	        else{
-	            kangaroo_rectangle.left = first_frame;
-	        }
-
-	        animation_clock.restart();
-	    }
-	}
-
-	void changeSprites(){
-		kangaroo_sprite.setPosition(position);
-
-		kangaroo_rectangle.width = 24;
-		kangaroo_rectangle.height = 24;
-
-		if(velocity.x != 0.0f && velocity.y == 0.0f){
-			updateSpritesheetPosition(48);
-		}
-
-		else{
-			kangaroo_rectangle.left = 0;
-			kangaroo_rectangle.top = 0;
-		}
-
-		kangaroo_sprite.setTextureRect(kangaroo_rectangle);
-	}
-
-
-	void draw(RenderWindow &window) {
-		window.draw(kangaroo_sprite);
-	}
-
-	bool controls(RenderWindow *rWindow){
-		move(rWindow);
-
-		if((sf::Keyboard::isKeyPressed(sf::Keyboard::W)
-				|| sf::Keyboard::isKeyPressed(sf::Keyboard::Up)
-				|| sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) && !testCollision(rWindow))
-			velocity.y += tile_size * -24;
-		if((sf::Keyboard::isKeyPressed(sf::Keyboard::S)
-				|| sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) && testCollision(rWindow))
-			velocity.y = tile_size * 24;
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-			velocity.x = tile_size * -6;
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-			velocity.x = tile_size * 6;
-
-		return true;
 	}
 };
 
