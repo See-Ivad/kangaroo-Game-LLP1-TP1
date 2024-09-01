@@ -8,32 +8,32 @@
 using namespace std;
 
 int main(){
-	vector<string> map{"XXXXXXXXXXX#XXXXXXXX",
-					   "X##XXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXX###XXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXXXXXXXXXXXXX",
-					   "XXXXXXXXX####XXXXXXX"};
+	vector<string> map{"XXXXXXXXXXXXXXXXXXXX",
+						"XXXXXXXXXXXXXXXXXXXX",
+						"XXXXXXXXXXXXXXXXXXXX",
+						"XXXXXXXXXXXXXXXXXXXX",
+						"##XXXXXXXXXXXXXXXX##",
+						"##XXXXXXXXXXXXXXXX##",
+						"##XXXXXXXXXXXXXXXX##",
+						"##XXXXXXXXXXXXXXXX##",
+						"##############XXX###",
+						"##XXXXXXXXXXXXXXXX##",
+						"##XXXXXXXXXXXXXXXX##",
+						"##XXXXXXXXXXXXXXXX##",
+						"##XXXXXXXXXXXXXXXX##",
+						"###XXX##############",
+						"##XXXXXXXXXXXXXXXX##",
+						"##XXXXXXXXXXXXXXXX##",
+						"##XXXXXXXXXXXXXXXX##",
+						"##XXXXXXXXXXXXXXXX##",
+						"##############XXX###",
+						"##XXXXXXXXXXXXXXXX##",
+						"##XXXXXXXXXXXXXXXX##",
+						"##XXXXXXXXXXXXXXXX##",
+						"##XXXXXXXXXXXXXXXX##",
+						"###XXXXXXXXXXXXXX###"};
 	Game game1(map);
 	game1.run();
-    return 0;
+	return 0;
 }
 
