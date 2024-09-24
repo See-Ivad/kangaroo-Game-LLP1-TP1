@@ -17,84 +17,99 @@ class Player: public Movable{
 public:
 	bool has_gloves = true;
 	bool is_crouching;
+	bool is_punching;
 
 	Player(Vector2f position, Vector2f velocity, Vector2f bodySize)
 	: Movable(position, velocity, bodySize){
-		loadPlayerTexture();
+		loadTexture("spritesheets/kangaroo.png");
 		sprite.setTexture(texture);
 		body.setFillColor(sf::Color::Transparent);
+		is_crouching = false;
+		is_punching = false;
 	}
 
-	void loadPlayerTexture(){
-		if(has_gloves){
-			texture.loadFromFile("spritesheets/kangaroo.png");
+	void changeHitBoxSize(){
+		sprite.setPosition(position);
+
+		texture_rect.width = TILE_SIZE;
+		texture_rect.height = TILE_SIZE;
+
+		if(is_crouching){
+			texture_rect.top = TILE_SIZE * 1.5;
+			texture_rect.left = 0;
 		}
-		else{
-			texture.loadFromFile("spritesheets/no_gloves.png");
+		else if(is_punching){
+			texture_rect.top = TILE_SIZE;
+			texture_rect.left = TILE_SIZE * 2;
 		}
-		body.setTexture(&texture);
+
+		sprite.setTextureRect(texture_rect);
 	}
 
 	bool controls(RenderWindow *rWindow){
 		move(rWindow);
 		is_crouching = false;
+		is_punching = false;
 
-		if((sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		if((Keyboard::isKeyPressed(sf::Keyboard::W) || Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::Space))
 				&& velocity.y == 0)
 			velocity.y += TILE_SIZE * -24;
 
-		if((sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-				&& !(sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))){
+		if((Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::Left))
+				&& !is_crouching){
 			velocity.x = TILE_SIZE * -6;
 			facing_left = true;
 		}
 
-		if((sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-				&& !(sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))){
+		if((Keyboard::isKeyPressed(Keyboard::D) || Keyboard::isKeyPressed(Keyboard::Right))
+				&& !is_crouching){
 			velocity.x = TILE_SIZE * 6;
 			facing_left = false;
 		}
 
-		if((sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))){
+		//actions
+		if((Keyboard::isKeyPressed(Keyboard::S) || Keyboard::isKeyPressed(Keyboard::Down))){
 			is_crouching = true;
 			if(testCollision(rWindow))
 				velocity.y = TILE_SIZE * 24;
 		}
 
+		if((Keyboard::isKeyPressed(Keyboard::RShift) || Keyboard::isKeyPressed(Keyboard::LShift))){
+			is_punching = true;
+			velocity.x /= 2;
+		}
+
 		return true;
 	}
 
-	void draw(RenderWindow *window){
-		sprite.setScale(2.0f, 2.0f);
-		if(facing_left == true){
-			sprite.setScale(-2.0f, 2.0f);
-			sprite.setPosition(sprite.getPosition().x + (sprite.getGlobalBounds().width * 0.5), sprite.getPosition().y);
-		}
-		if(is_crouching == true){
-			sprite.setPosition(sprite.getPosition().x, sprite.getPosition().y + (sprite.getGlobalBounds().width * 0.25));
-		}
-		window->draw(sprite);
-	}
 
-	void update(RenderWindow *rWindow, vector<Platform> platforms){
+	//	void draw(RenderWindow *window){
+	//		if(facing_left == true){
+	//
+	//			sprite.setPosition(sprite.getPosition().x + (sprite.getGlobalBounds().width * 0.5), sprite.getPosition().y);
+	//		}
+	//		window->draw(sprite);
+	//	}
+
+	void player_update(RenderWindow *rWindow, vector<Platform> platforms){
 		controls(rWindow);
 		float deltaTime = deltaTimeGetter();
 		sf::Vector2f movement(velocity.x * deltaTime, velocity.y * deltaTime);
 		body.move(movement);
 
 		// Checar colisões com plataformas
-		for (int i = 0; i < platforms.size(); i++) {
-			if (body.getGlobalBounds().intersects(platforms[i].getBounds())) {
-				// Resolvendo a colisão vertical
-				if (velocity.y > 0) { // O player está caindo
-					body.setPosition(body.getPosition().x, platforms[i].getBounds().width);
-					movement.x = 0;
-					movement.y *= -1;
-					body.move(movement);
-					velocity.y = 0;
-				}
-			}
-		}
+		//		for (int i = 0; i < platforms.size(); i++) {
+		//			if (body.getGlobalBounds().intersects(platforms[i].getBounds())) {
+		//				// Resolvendo a colisão vertical
+		//				if (velocity.y > 0) { // O player está caindo
+		//					body.setPosition(body.getPosition().x, platforms[i].getBounds().width);
+		//					movement.x = 0;
+		//					movement.y *= -1;
+		//					body.move(movement);
+		//					velocity.y = 0;
+		//				}
+		//			}
+		//		}
 
 		// Checar colisões com as bordas da janela
 		//		if (body.getPosition().x < 0) {
@@ -117,7 +132,8 @@ public:
 
 
 
-		changeSprites();
+		changeSpriteTextures();
+		changeHitBoxSize();
 		draw(rWindow);
 	}
 };

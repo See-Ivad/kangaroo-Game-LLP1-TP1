@@ -25,16 +25,18 @@ private:
 	sf::Texture background_texture;
 	sf::Sprite background_sprite;
 	int level;
+	int points;
 
 public:
 	Game(vector<string> mapMatrix) :
-		windowSize(480, 480),
+		windowSize(480, 552),
 		window(sf::VideoMode(windowSize.x, windowSize.y), "Rescue The Kangaroo!"),
 		position(windowSize.x * 3 / 20, windowSize.y * 17 / 22),
 		velocity(0.0f, 0.0f),
 		size(48, 48),
 		player(position, velocity, size),
-		level(0)
+		level(0),
+		points(0)
 	{
 		background_texture.loadFromFile("spritesheets/background.png");
 		background_sprite.setTexture(background_texture);
@@ -45,7 +47,7 @@ public:
 		for (int i = 0; i < mapMatrix.size(); i++){
 			for(int j = 0; j < 20 ; j++){
 				if(mapMatrix[i][j] == '#'){
-					platforms.push_back(Platform(Vector2f (j*20, i*20),Vector2f (24, 24)));
+					platforms.push_back(Platform(Vector2f (j*24, i*24),Vector2f (24, 24)));
 
 					cout << "create platform" << endl;
 				}
@@ -55,7 +57,7 @@ public:
 		for (int i = 0; i < mapMatrix.size(); i++){
 			for(int j = 0; j < 20 ; j++){
 				if(mapMatrix[i][j] == '@'){
-					ladders.push_back(Ladder(Vector2f (j*20, i*20),Vector2f (24, 24)));
+					ladders.push_back(Ladder(Vector2f (j*24, i*24),Vector2f (24, 24)));
 
 					cout << "create ladder" << endl;
 				}
@@ -112,24 +114,24 @@ public:
 		for(int i = 0; i < ladders.size(); i++){
 			window.draw(ladders[i].getBody());
 		}
-		for(size_t i = 0; i < enemies.size(); i++){
+		for (size_t i = 0; i < enemies.size(); i++){
 			enemies[i].draw(&window);
 		}
 
 		window.display();
 	}
 
-	void run() {
-		while (window.isOpen()) {
+	void run(){
+		while (window.isOpen()){
 			sf::Event event;
-			while (window.pollEvent(event)) {
+			while (window.pollEvent(event)){
 				if (event.type == sf::Event::Closed)
 					window.close();
 			}
 
-			player.update(&window, platforms);
-			for (auto& enemy : enemies) {
-				enemy.rng_test(level); // Update enemies
+			player.player_update(&window, platforms);
+			for (auto& enemy : enemies){
+				enemy.rng_test(level);
 			}
 			render();
 		}

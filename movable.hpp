@@ -64,12 +64,13 @@ public:
 		return delta.count();
 	}
 
-	void loadTexture(string string){
-		texture.loadFromFile(string);
+	void loadTexture(string filename){
+		if (!texture.loadFromFile(filename)){
+		}
 		body.setTexture(&texture);
 	}
 
-	void changeSprites(){
+	void changeSpriteTextures(){
 		sprite.setPosition(position);
 
 		texture_rect.width = TILE_SIZE;
@@ -91,30 +92,9 @@ public:
 			texture_rect.left = 0;
 			texture_rect.top = 0;
 		}
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
-			texture_rect.left = 0;
-			texture_rect.top = TILE_SIZE * 1.5;
-			texture_rect.height = TILE_SIZE / 2;
-		}
-
 		sprite.setTextureRect(texture_rect);
-
-		if(facing_left){
-			sprite.setScale(-2.0f, 2.0f);
-		}
-		else{
-			sprite.setScale(2.0f, 2.0f);
-		}
+		sprite.setScale(facing_left ? -2.0f : 2.0f, 2.0f);
 	}
-
-	bool isFacingLeft(){
-		return facing_left;
-	}
-
-	void setFacingLeft(bool left){
-		facing_left = left;
-	}
-
 
 	bool move(RenderWindow *rWindow){
 		float delta_time = deltaTimeGetter();
@@ -136,7 +116,7 @@ public:
 		return true;
 	}
 
-	void setOriginMiddle() {
+	void setOriginMiddle(){
 		Vector2f sizeBody = body.getSize();
 		body.setOrigin(sizeBody.x / 2, sizeBody.y / 2);
 	}
@@ -156,25 +136,20 @@ public:
 		}
 	}
 
-	bool setVelocityY(int y){
-		this->velocity.y = y;
-		return true;
+	void setFacingLeft(bool left){
+		facing_left = left;
 	}
 
-	bool setVelocityX(int x){
-		this->velocity.x = x;
-		return true;
-	}
-
-	bool setVelocity(Vector2f velocity){
+	void setVelocity(const sf::Vector2f& velocity){
 		this->velocity = velocity;
-		return true;
 	}
 
-	bool setTexture(Texture *texture){
-		body.setTexture(texture);
+	void setTexture(const Texture& texture){
+		body.setTexture(&texture);
+	}
 
-		return true;
+	bool isFacingLeft(){
+		return facing_left;
 	}
 
 	Vector2f getPosition(){
@@ -187,6 +162,22 @@ public:
 
 	RectangleShape getBody(){
 		return body;
+	}
+
+	void draw(RenderWindow *window){
+		if(facing_left == true){
+			sprite.setPosition(sprite.getPosition().x + (sprite.getGlobalBounds().width * 0.5), sprite.getPosition().y);
+		}
+		window->draw(sprite);
+	}
+
+	void update(RenderWindow *rWindow){
+		float deltaTime = deltaTimeGetter();
+		sf::Vector2f movement(velocity.x * deltaTime, velocity.y * deltaTime);
+		body.move(movement);
+
+		changeSpriteTextures();
+		draw(rWindow);
 	}
 };
 
