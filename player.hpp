@@ -55,8 +55,9 @@ public:
 				&& velocity.y == 0)
 			velocity.y += TILE_SIZE * -24;
 
-		if((Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::Left))
-				&& !is_crouching){
+
+
+		if((Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::Left))){
 			velocity.x = TILE_SIZE * -6;
 			facing_left = true;
 		}
@@ -70,18 +71,18 @@ public:
 		//actions
 		if((Keyboard::isKeyPressed(Keyboard::S) || Keyboard::isKeyPressed(Keyboard::Down))){
 			is_crouching = true;
+			velocity.x = 0;
 			if(testCollision(rWindow))
 				velocity.y = TILE_SIZE * 24;
 		}
 
 		if((Keyboard::isKeyPressed(Keyboard::RShift) || Keyboard::isKeyPressed(Keyboard::LShift))){
 			is_punching = true;
-			velocity.x /= 2;
+			velocity.x = 0;
 		}
 
 		return true;
 	}
-
 
 	//	void draw(RenderWindow *window){
 	//		if(facing_left == true){
@@ -96,42 +97,6 @@ public:
 		float deltaTime = deltaTimeGetter();
 		sf::Vector2f movement(velocity.x * deltaTime, velocity.y * deltaTime);
 		body.move(movement);
-
-		// Checar colisões com plataformas
-		//		for (int i = 0; i < platforms.size(); i++) {
-		//			if (body.getGlobalBounds().intersects(platforms[i].getBounds())) {
-		//				// Resolvendo a colisão vertical
-		//				if (velocity.y > 0) { // O player está caindo
-		//					body.setPosition(body.getPosition().x, platforms[i].getBounds().width);
-		//					movement.x = 0;
-		//					movement.y *= -1;
-		//					body.move(movement);
-		//					velocity.y = 0;
-		//				}
-		//			}
-		//		}
-
-		// Checar colisões com as bordas da janela
-		//		if (body.getPosition().x < 0) {
-		//			body.setPosition(0, body.getPosition().y);
-		//			velocity.x = 0;
-		//		}
-		//		if (body.getPosition().x + body.getSize().x > rWindow -> getSize().x) {
-		//			body.setPosition(rWindow -> getSize().x - body.getSize().x, body.getPosition().y);
-		//			velocity.x = 0;
-		//		}
-		//		if (body.getPosition().y < 0) {
-		//			body.setPosition(body.getPosition().x, 0);
-		//			velocity.y = 0;
-		//		}
-		//		if (body.getPosition().y + body.getSize().y > rWindow -> getSize().y) {
-		//			body.setPosition(body.getPosition().x, rWindow -> getSize().y - body.getSize().y);
-		//			velocity.y = 0;
-		//		}
-
-
-
-
 		changeSpriteTextures();
 		changeHitBoxSize();
 		draw(rWindow);

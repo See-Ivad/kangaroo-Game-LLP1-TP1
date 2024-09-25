@@ -16,14 +16,14 @@ using namespace sf;
 
 class Enemy : public Movable{
 public:
-	float spawn_rate = 1; //normal de 1 segundo
+	float spawn_rate = 2; //normal de 2s
 	int difficulty;
 
 	Enemy(Vector2f position, Vector2f velocity, Vector2f bodySize, int difficulty)
 	: Movable(position, velocity, bodySize), difficulty(difficulty){
 		loadTexture("spritesheets/enemy.png");
 		sprite.setTexture(texture);
-		body.setFillColor(sf::Color::Green);
+		body.setFillColor(sf::Color::Blue);
 	}
 
 	void rng_test(int level){

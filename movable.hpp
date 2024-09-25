@@ -180,5 +180,35 @@ public:
 		draw(rWindow);
 	}
 };
+		// Checar colisões com plataformas
+		//		for (int i = 0; i < platforms.size(); i++) {
+		//			if (body.getGlobalBounds().intersects(platforms[i].getBounds())) {
+		//				// Resolvendo a colisão vertical
+		//				if (velocity.y > 0) { // O player está caindo
+		//					body.setPosition(body.getPosition().x, platforms[i].getBounds().width);
+		//					movement.x = 0;
+		//					movement.y *= -1;
+		//					body.move(movement);
+		//					velocity.y = 0;
+		//				}
+		//			}
+		//		}
 
+		// Checar colisões com as bordas da janela
+		//		if (body.getPosition().x < 0) {
+		//			body.setPosition(0, body.getPosition().y);
+		//			velocity.x = 0;
+		//		}
+		//		if (body.getPosition().x + body.getSize().x > rWindow -> getSize().x) {
+		//			body.setPosition(rWindow -> getSize().x - body.getSize().x, body.getPosition().y);
+		//			velocity.x = 0;
+		//		}
+		//		if (body.getPosition().y < 0) {
+		//			body.setPosition(body.getPosition().x, 0);
+		//			velocity.y = 0;
+		//		}
+		//		if (body.getPosition().y + body.getSize().y > rWindow -> getSize().y) {
+		//			body.setPosition(body.getPosition().x, rWindow -> getSize().y - body.getSize().y);
+		//			velocity.y = 0;
+		//		}
 #endif /* MOVABLE_HPP_ */

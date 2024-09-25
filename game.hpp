@@ -8,10 +8,11 @@
 #include "ladder.hpp"
 #include <vector>
 
+using namespace sf;
+
 class Game{
 private:
 	Vector2f windowSize;
-
 	sf::RenderWindow window;
 
 	Vector2f position;
@@ -28,7 +29,7 @@ private:
 	int points;
 
 public:
-	Game(vector<string> mapMatrix) :
+	Game(std::vector<std::string> mapMatrix) :
 		windowSize(480, 552),
 		window(sf::VideoMode(windowSize.x, windowSize.y), "Rescue The Kangaroo!"),
 		position(windowSize.x * 3 / 20, windowSize.y * 17 / 22),
@@ -42,80 +43,37 @@ public:
 		background_sprite.setTexture(background_texture);
 		background_sprite.setScale(2.0f, 2.0f);
 
-		enemies.push_back(Enemy(Vector2f(100, 100), Vector2f(0.0f, 0.0f), Vector2f(48, 48), level));
-
-		for (int i = 0; i < mapMatrix.size(); i++){
-			for(int j = 0; j < 20 ; j++){
-				if(mapMatrix[i][j] == '#'){
-					platforms.push_back(Platform(Vector2f (j*24, i*24),Vector2f (24, 24)));
-
-					cout << "create platform" << endl;
-				}
-			}
-		}
-
-		for (int i = 0; i < mapMatrix.size(); i++){
-			for(int j = 0; j < 20 ; j++){
-				if(mapMatrix[i][j] == '@'){
-					ladders.push_back(Ladder(Vector2f (j*24, i*24),Vector2f (24, 24)));
-
-					cout << "create ladder" << endl;
-				}
-			}
-		}
-
-		//	        // Constructor body (if needed)
-		//		        platforms.push_back(
-		//						Platform(Vector2f(0, 21 * 24), Vector2f(20 * 24, 24)));//PLAT-0
-		//
-		//				platforms.push_back(
-		//						Platform(Vector2f(0, 16 * 24), Vector2f(530, 24)));//PLAT1
-		//
-		//				platforms.push_back(
-		//						Platform(Vector2f(615, 576), Vector2f(150, 24)));//PLAT1
-		//
-		//
-		//				platforms.push_back(
-		//						Platform(Vector2f(183, 396), Vector2f(600, 24)));//PLAT2
-		//				platforms.push_back(
-		//						Platform(Vector2f(0, 396), Vector2f(100, 24)));//PLAT2
-		//
-		//
-		//				platforms.push_back(
-		//						Platform(Vector2f(0, 216), Vector2f(530, 24)));//PLAT3
-		//
-		//				platforms.push_back(
-		//						Platform(Vector2f(615, 216), Vector2f(150, 24)));//PLAT3
-		//
-		//
-		//
-		//
-		//
-		//				ladders.push_back(
-		//						Ladder(Vector2f(540, 576), Vector2f(72, 180)));//ESCADA1
-		//
-		//				ladders.push_back(
-		//						Ladder(Vector2f(108, 396), Vector2f(72, 180)));//ESCADA2
-		//
-		//				ladders.push_back(
-		//						Ladder(Vector2f(540, 216), Vector2f(72, 180)));//ESCADA3
+		enemies.push_back(Enemy(sf::Vector2f(0, 0), sf::Vector2f(0.0f, 0.0f), sf::Vector2f(48, 48), level));
+		loadPlatforms(mapMatrix);
 	}
 
+	void loadPlatforms(const std::vector<std::string>& mapMatrix){
+		for(size_t i = 0; i < mapMatrix.size(); ++i){
+			for(size_t j = 0; j < 20; ++j){
+				if(mapMatrix[i][j] == 'T' || mapMatrix[i][j] == 'b' || mapMatrix[i][j] == '-'){
+					Platform platform(sf::Vector2f(j * 24, i * 24), sf::Vector2f(24, 24));
+					platform.assignTexture(mapMatrix[i][j]);
+					platforms.push_back(platform);
+					std::cout << "platform created at (" << j * 24 << ", " << i * 24 << ")" << std::endl;
+				}
+			}
+		}
+	}
 
+	void drawPlatforms(sf::RenderWindow& window){
+		for(auto& platform : platforms){
+			platform.draw(&window);
+		}
+	}
 
-	void render() {
+	void render(){
 		window.clear();
 		window.draw(background_sprite);
 		player.draw(&window);
+		drawPlatforms(window);
 
-		for(int i = 0; i < platforms.size(); i++){
-			window.draw(platforms[i].getBody());
-		}
-		for(int i = 0; i < ladders.size(); i++){
-			window.draw(ladders[i].getBody());
-		}
-		for (size_t i = 0; i < enemies.size(); i++){
-			enemies[i].draw(&window);
+		for(auto& enemy : enemies){
+			enemy.draw(&window);
 		}
 
 		window.display();
