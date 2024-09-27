@@ -28,6 +28,8 @@ private:
 	int level;
 	int points;
 
+	Music game_theme;
+
 public:
 	Game(std::vector<std::string> mapMatrix) :
 		windowSize(480, 552),
@@ -76,6 +78,7 @@ public:
 			enemy.draw(&window);
 		}
 
+
 		window.display();
 	}
 
@@ -88,7 +91,7 @@ public:
 			}
 
 			player.player_update(&window, platforms);
-			for (auto& enemy : enemies){
+			for(auto& enemy : enemies){
 				enemy.rng_test(level);
 			}
 			render();

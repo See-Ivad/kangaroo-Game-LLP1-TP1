@@ -19,6 +19,12 @@ public:
 	bool is_crouching;
 	bool is_punching;
 
+	SoundBuffer jump_buffer;
+	Sound jump_sound;
+
+	SoundBuffer punch_buffer;
+	Sound punch_sound;
+
 	Player(Vector2f position, Vector2f velocity, Vector2f bodySize)
 	: Movable(position, velocity, bodySize){
 		loadTexture("spritesheets/kangaroo.png");
@@ -26,6 +32,12 @@ public:
 		body.setFillColor(sf::Color::Transparent);
 		is_crouching = false;
 		is_punching = false;
+
+		jump_buffer.loadFromFile("audio/player_jump_S3K_62.wav");
+		jump_sound.setBuffer(jump_buffer);
+
+		punch_buffer.loadFromFile("audio/player_punch_S3K_4F.wav");
+		punch_sound.setBuffer(punch_buffer);
 	}
 
 	void changeHitBoxSize(){
@@ -51,12 +63,6 @@ public:
 		is_crouching = false;
 		is_punching = false;
 
-		if((Keyboard::isKeyPressed(sf::Keyboard::W) || Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::Space))
-				&& velocity.y == 0)
-			velocity.y += TILE_SIZE * -24;
-
-
-
 		if((Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::Left))){
 			velocity.x = TILE_SIZE * -6;
 			facing_left = true;
@@ -79,6 +85,15 @@ public:
 		if((Keyboard::isKeyPressed(Keyboard::RShift) || Keyboard::isKeyPressed(Keyboard::LShift))){
 			is_punching = true;
 			velocity.x = 0;
+
+			punch_sound.play();
+		}
+
+		if((Keyboard::isKeyPressed(sf::Keyboard::W) || Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::Space))
+				&& velocity.y == 0 && !is_crouching){
+			velocity.y += TILE_SIZE * -24;
+
+			jump_sound.play();
 		}
 
 		return true;
