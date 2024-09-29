@@ -23,8 +23,8 @@ private:
 	vector<Ladder> ladders;
 	vector<Enemy> enemies;
 
-	sf::Texture background_texture;
-	sf::Sprite background_sprite;
+	Texture background_texture;
+	Sprite background_sprite;
 	int level;
 	int points;
 
@@ -45,8 +45,9 @@ public:
 		background_sprite.setTexture(background_texture);
 		background_sprite.setScale(2.0f, 2.0f);
 
-		enemies.push_back(Enemy(sf::Vector2f(0, 0), sf::Vector2f(0.0f, 0.0f), sf::Vector2f(48, 48), level));
+		enemies.push_back(Enemy(Vector2f(0, 0), Vector2f(0.0f, 0.0f), Vector2f(48, 48), level));
 		loadPlatforms(mapMatrix);
+		game_theme.openFromFile("audio/04-angel_island_zone-act_2.ogg");
 	}
 
 	void loadPlatforms(const std::vector<std::string>& mapMatrix){
@@ -83,6 +84,9 @@ public:
 	}
 
 	void run(){
+		game_theme.setLoop(true);
+		game_theme.play();
+
 		while (window.isOpen()){
 			sf::Event event;
 			while (window.pollEvent(event)){
