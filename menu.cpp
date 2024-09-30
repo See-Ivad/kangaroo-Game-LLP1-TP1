@@ -10,7 +10,7 @@
 
 Menu::Menu(float width, float height){
 
-	if(!font.loadFromFile("arial.ttf")){
+	if(!font.loadFromFile("Pingsan.ttf")){
 
 		//em caso de erro
 	}

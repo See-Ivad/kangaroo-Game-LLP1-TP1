@@ -17,21 +17,21 @@ int main(){
 						"TTXXXXXXXXXXXXXXXXTT",
 						"TTXXXXXXXXXXXXXXXXTT",
 						"TTXXXXXXXXXXXXXXXXTT",
-						"TTbbbbbbbbbbbbXXXbTT",
-						"TTXXXXXXXXXXXXXXXXTT",
-						"TTXXXXXXXXXXXXXXXXTT",
-						"TTXXXXXXXXXXXXXXXXTT",
-						"TTXXXXXXXXXXXXXXXXTT",
-						"TTbXXXbbbbbbbbbbbbTT",
-						"TTXXXXXXXXXXXXXXXXTT",
-						"TTXXXXXXXXXXXXXXXXTT",
-						"TTXXXXXXXXXXXXXXXXTT",
-						"TTXXXXXXXXXXXXXXXXTT",
-						"TTbbbbbbbbbbbXXXbbTT",
-						"TTXXXXXXXXXXXXXXXXTT",
-						"TTXXXXXXXXXXXXXXXXTT",
-						"TTXXXXXXXXXXXXXXXXTT",
-						"TTXXXXXXXXXXXXXXXXTT",
+						"TTbbbbbbbbbbbbhhhbTT",
+						"TTXXXXXXXXXXXXhhhXTT",
+						"TTXXXXXXXXXXXXhhhXTT",
+						"TTXXXXXXXXXXXXhhhXTT",
+						"TTXXXXXXXXXXXXhhhXTT",
+						"TTbhhhbbbbbbbbbbbbTT",
+						"TTXhhhXXXXXXXXXXXXTT",
+						"TTXhhhXXXXXXXXXXXXTT",
+						"TTXhhhXXXXXXXXXXXXTT",
+						"TTXhhhXXXXXXXXXXXXTT",
+						"TTbbbbbbbbbbbhhhbbTT",
+						"TTXXXXXXXXXXXhhhXXTT",
+						"TTXXXXXXXXXXXhhhXXTT",
+						"TTXXXXXXXXXXXhhhXXTT",
+						"TTXXXXXXXXXXXhhhXXTT",
 						"---XXXXXXXXXXXXXX---"};
 	Game game1(map);
 
@@ -41,12 +41,13 @@ int main(){
 	Menu menu(480, 552);
 
 	sf::Texture texture;
-	 if(!texture.loadFromFile("/kangaroo/spritesheets/background.png")){
+	 if(!texture.loadFromFile("spritesheets/backgroundMenu.jpg")){
 		 cout << "fundo n funfo"<<endl;
 	 }
 
 	 sf::Sprite sprite;
 	 sprite.setTexture(texture);
+	 sprite.setScale(0.4,0.3);
 
 
 	while(window.isOpen()){
@@ -92,8 +93,8 @@ int main(){
 			}
 
 			window.clear();
-			menu.draw(window);
 			window.draw(sprite);
+			menu.draw(window);
 			window.display();
 	}
 

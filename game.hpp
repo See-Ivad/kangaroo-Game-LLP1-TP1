@@ -21,7 +21,7 @@ private:
 	Vector2f size;
 	Player player;
 	vector<Platform *> platforms;
-	vector<Ladder> ladders;
+	vector<Ladder *> ladders;
 	vector<Enemy *> enemies;
 
 	Texture background_texture;
@@ -53,11 +53,18 @@ public:
 	void loadPlatforms(const vector<string>& mapMatrix){
 		for(size_t i = 0; i < mapMatrix.size(); ++i){
 			for(size_t j = 0; j < 20; ++j){
-				if(mapMatrix[i][j] != 'X'){
+				if(mapMatrix[i][j] != 'X' && mapMatrix[i][j] != 'h'){
 					Platform * platform = new Platform(Vector2f(j * 24, i * 24), Vector2f(24, 24));
 					platform->assignTexture(mapMatrix[i][j]);
 					platforms.push_back(platform);
 					//cout << "platform created at (" << j * 24 << ", " << i * 24 << ")" << endl;
+				}
+
+				else if(mapMatrix[i][j] == 'h'){
+
+					Ladder * ladder = new Ladder(Vector2f(j * 24, i * 24), Vector2f(24, 24));
+					ladder->assignTexture(mapMatrix[i][j]);
+					ladders.push_back(ladder);
 				}
 			}
 		}
@@ -67,13 +74,17 @@ public:
 		for(auto& platform : platforms){
 			platform->draw(&window);
 		}
+
+		for(auto& Ladder : ladders){
+					Ladder->draw(&window);
+		}
 	}
 
 	void render(){
 		window.clear();
 		window.draw(background_sprite);
-		player.draw(&window);
 		drawPlatforms(window);
+		player.draw(&window);
 
 		window.display();
 	}
@@ -89,7 +100,7 @@ public:
 					window.close();
 			}
 
-			player.player_update(&window, platforms);
+			player.player_update(&window, platforms, ladders);
 			render();
 		}
 	}
