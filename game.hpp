@@ -8,20 +8,21 @@
 #include "ladder.hpp"
 #include <vector>
 
+using namespace std;
 using namespace sf;
 
 class Game{
 private:
 	Vector2f windowSize;
-	sf::RenderWindow window;
+	RenderWindow window;
 
 	Vector2f position;
 	Vector2f velocity;
 	Vector2f size;
 	Player player;
-	vector<Platform> platforms;
+	vector<Platform *> platforms;
 	vector<Ladder> ladders;
-	vector<Enemy> enemies;
+	vector<Enemy *> enemies;
 
 	Texture background_texture;
 	Sprite background_sprite;
@@ -31,9 +32,9 @@ private:
 	Music game_theme;
 
 public:
-	Game(std::vector<std::string> mapMatrix) :
+	Game(vector<string> mapMatrix) :
 		windowSize(480, 552),
-		window(sf::VideoMode(windowSize.x, windowSize.y), "Rescue The Kangaroo!"),
+		window(VideoMode(windowSize.x, windowSize.y), "Rescue The Kangaroo!"),
 		position(windowSize.x * 3 / 20, windowSize.y * 17 / 22),
 		velocity(0.0f, 0.0f),
 		size(48, 48),
@@ -49,22 +50,22 @@ public:
 		game_theme.openFromFile("audio/04-angel_island_zone-act_2.ogg");
 	}
 
-	void loadPlatforms(const std::vector<std::string>& mapMatrix){
+	void loadPlatforms(const vector<string>& mapMatrix){
 		for(size_t i = 0; i < mapMatrix.size(); ++i){
 			for(size_t j = 0; j < 20; ++j){
-				if(mapMatrix[i][j] == 'T' || mapMatrix[i][j] == 'b' || mapMatrix[i][j] == '-'){
-					Platform platform(sf::Vector2f(j * 24, i * 24), sf::Vector2f(24, 24));
-					platform.assignTexture(mapMatrix[i][j]);
+				if(mapMatrix[i][j] != 'X'){
+					Platform * platform = new Platform(Vector2f(j * 24, i * 24), Vector2f(24, 24));
+					platform->assignTexture(mapMatrix[i][j]);
 					platforms.push_back(platform);
-					std::cout << "platform created at (" << j * 24 << ", " << i * 24 << ")" << std::endl;
+					//cout << "platform created at (" << j * 24 << ", " << i * 24 << ")" << endl;
 				}
 			}
 		}
 	}
 
-	void drawPlatforms(sf::RenderWindow& window){
+	void drawPlatforms(RenderWindow& window){
 		for(auto& platform : platforms){
-			platform.draw(&window);
+			platform->draw(&window);
 		}
 	}
 
@@ -74,11 +75,6 @@ public:
 		player.draw(&window);
 		drawPlatforms(window);
 
-		for(auto& enemy : enemies){
-			enemy.draw(&window);
-		}
-
-
 		window.display();
 	}
 
@@ -87,17 +83,20 @@ public:
 		game_theme.play();
 
 		while (window.isOpen()){
-			sf::Event event;
+			Event event;
 			while (window.pollEvent(event)){
-				if (event.type == sf::Event::Closed)
+				if (event.type == Event::Closed)
 					window.close();
 			}
 
 			player.player_update(&window, platforms);
-			for(auto& enemy : enemies){
-				enemy.rng_test(level);
-			}
 			render();
+		}
+	}
+
+	void finish(){
+		for(unsigned int i = 0; i < platforms.size(); i++){
+			delete platforms.at(i);
 		}
 	}
 };

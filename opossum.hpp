@@ -8,10 +8,11 @@
 
 #include "movable.hpp"
 #include "platforms.hpp"
-using namespace std;
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+
+using namespace std;
 using namespace sf;
 
 class Enemy : public Movable{
@@ -23,11 +24,11 @@ public:
 	: Movable(position, velocity, bodySize), difficulty(difficulty){
 		loadTexture("spritesheets/enemy.png");
 		sprite.setTexture(texture);
-		body.setFillColor(sf::Color::Transparent);
+		body.setFillColor(Color::Transparent);
 	}
 
-	void rng_test(int level){
-		static std::random_device random;
+	bool rng_test(int level){
+		static random_device random;
 		mt19937 rng(random());
 		uniform_int_distribution<int> dist(0, 5);
 		int test = dist(rng);
@@ -38,13 +39,17 @@ public:
 			if(difficulty - test >= 0){
 				cout << "opossum generated! " << test << endl;
 				cout << "difficulty: " << difficulty << "\n" << endl;
+				animation_clock.restart();
+				return true;
 			}
-//			else if(difficulty - test < 0){
-//				cout << test << endl;
-//				cout << "difficulty: " << difficulty << "\n" << endl;
-//			}
-			animation_clock.restart();
+			else if(difficulty - test < 0){
+				cout << test << endl;
+				cout << "d.: " << difficulty << "\n" << endl;
+				animation_clock.restart();
+				return false;
+			}
 		}
+		return false;
 	}
 };
 

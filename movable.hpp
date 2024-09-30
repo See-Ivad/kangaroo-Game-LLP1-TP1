@@ -3,10 +3,11 @@
 
 #include <iostream>
 #include <chrono>
-using namespace std;
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+
+using namespace std;
 using namespace sf;
 
 class Movable{
@@ -140,7 +141,7 @@ public:
 		facing_left = left;
 	}
 
-	void setVelocity(const sf::Vector2f& velocity){
+	void setVelocity(const Vector2f& velocity){
 		this->velocity = velocity;
 	}
 
@@ -173,7 +174,7 @@ public:
 
 	void update(RenderWindow *rWindow){
 		float deltaTime = deltaTimeGetter();
-		sf::Vector2f movement(velocity.x * deltaTime, velocity.y * deltaTime);
+		Vector2f movement(velocity.x * deltaTime, velocity.y * deltaTime);
 		body.move(movement);
 
 		changeSpriteTextures();

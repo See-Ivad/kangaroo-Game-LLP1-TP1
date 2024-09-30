@@ -7,10 +7,11 @@
 
 #include "movable.hpp"
 #include "platforms.hpp"
-using namespace std;
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+
+using namespace std;
 using namespace sf;
 
 class Player: public Movable{
@@ -124,15 +125,7 @@ public:
 		return true;
 	}
 
-	//	void draw(RenderWindow *window){
-	//		if(facing_left == true){
-	//
-	//			sprite.setPosition(sprite.getPosition().x + (sprite.getGlobalBounds().width * 0.5), sprite.getPosition().y);
-	//		}
-	//		window->draw(sprite);
-	//	}
-
-	void player_update(RenderWindow *rWindow, vector<Platform> platforms){
+	void player_update(RenderWindow *rWindow, vector<Platform *> platforms){
 		controls(rWindow);
 		float deltaTime = deltaTimeGetter();
 		Vector2f movement(velocity.x * deltaTime, velocity.y * deltaTime);

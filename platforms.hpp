@@ -3,21 +3,24 @@
 
 #include <SFML/Graphics.hpp>
 
+using namespace std;
+using namespace sf;
+
 class Platform{
 public:
-	sf::Vector2f position;
-	sf::RectangleShape block;
+	Vector2f position;
+	RectangleShape block;
 	const int BLOCK_SIZE = 12;
 
-	sf::Texture texture;
-	sf::Sprite sprite;
+	Texture texture;
+	Sprite sprite;
 
-	Platform(sf::Vector2f position, sf::Vector2f blockSize){
+	Platform(Vector2f position, Vector2f blockSize){
 		loadTexture("spritesheets/tileset.png");
 		this->position = position;
 		this->block.setPosition(this->position);
 		this->block.setSize(blockSize);
-		block.setFillColor(sf::Color::Transparent);
+		block.setFillColor(Color::Transparent);
 		block.setTexture(&texture);
 		sprite.setTexture(texture);
 		sprite.setPosition(position);
@@ -29,21 +32,88 @@ public:
 
 	void loadTexture(std::string filename){
 		if (!texture.loadFromFile(filename)){
-			std::cerr << "Failed to load texture from " << filename << std::endl;
+			cout << "Failed to load texture from " << filename << std::endl;
 		}
 		block.setTexture(&texture);
 	}
 
 	void assignTexture(char type){
-		sf::IntRect texture_rect;
+		IntRect texture_rect;
 		texture_rect.width = BLOCK_SIZE;
 		texture_rect.height = BLOCK_SIZE;
 
 		switch (type) {
+		//tree trunks
 		case 'T':
 			texture_rect.top = BLOCK_SIZE * 3;
 			texture_rect.left = 0;
 			break;
+		case 't':
+			texture_rect.top = BLOCK_SIZE * 3;
+			texture_rect.left = BLOCK_SIZE;
+			break;
+
+		case 'C':
+			texture_rect.top = BLOCK_SIZE * 4;
+			texture_rect.left = 0;
+			break;
+		case 'c':
+			texture_rect.top = BLOCK_SIZE * 4;
+			texture_rect.left = BLOCK_SIZE;
+			break;
+
+		case 'D':
+			texture_rect.top = BLOCK_SIZE * 3;
+			texture_rect.left = BLOCK_SIZE * 3;
+			break;
+		case 'd':
+			texture_rect.top = BLOCK_SIZE * 3;
+			texture_rect.left = BLOCK_SIZE * 4;
+			break;
+
+			//main leaf texture
+		case 'L':
+			texture_rect.top = BLOCK_SIZE * 2;
+			texture_rect.left = BLOCK_SIZE * 16;
+			break;
+
+			//no background leaves
+		case '1':
+			texture_rect.top = BLOCK_SIZE * 4;
+			texture_rect.left = BLOCK_SIZE * 14;
+			break;
+		case '2':
+			texture_rect.top = BLOCK_SIZE * 4;
+			texture_rect.left = BLOCK_SIZE * 16;
+			break;
+		case '3':
+			texture_rect.top = BLOCK_SIZE * 4;
+			texture_rect.left = BLOCK_SIZE * 18;
+			break;
+		case '4':
+			texture_rect.top = BLOCK_SIZE * 2;
+			texture_rect.left = BLOCK_SIZE * 14;
+			break;
+
+			//leaves + trees
+		case '@': //2
+			texture_rect.top = BLOCK_SIZE * 4;
+			texture_rect.left = BLOCK_SIZE * 28;
+			break;
+		case '&': //7
+			texture_rect.top = 0;
+			texture_rect.left = BLOCK_SIZE * 26;
+			break;
+		case '*': //8
+			texture_rect.top = 0;
+			texture_rect.left = BLOCK_SIZE * 28;
+			break;
+		case '(': //9
+			texture_rect.top = 0;
+			texture_rect.left = BLOCK_SIZE * 30;
+			break;
+
+
 		case 'b':
 			texture_rect.top = 0;
 			texture_rect.left = BLOCK_SIZE;
@@ -55,16 +125,16 @@ public:
 		sprite.setTextureRect(texture_rect);
 	}
 
-	void draw(sf::RenderWindow* window){
+	void draw(RenderWindow* window){
 		sprite.setScale(2.0f, 2.0f);
 		window->draw(sprite);
 	}
 
-	sf::RectangleShape getBody(){
+	RectangleShape getBody(){
 		return block;
 	}
 
-	sf::FloatRect getBounds() const{
+	FloatRect getBounds() const{
 		return block.getGlobalBounds();
 	}
 };
