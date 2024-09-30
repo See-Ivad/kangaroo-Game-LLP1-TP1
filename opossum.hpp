@@ -23,13 +23,13 @@ public:
 	: Movable(position, velocity, bodySize), difficulty(difficulty){
 		loadTexture("spritesheets/enemy.png");
 		sprite.setTexture(texture);
-		body.setFillColor(sf::Color::Blue);
+		body.setFillColor(sf::Color::Transparent);
 	}
 
 	void rng_test(int level){
 		static std::random_device random;
-		std::mt19937 rng(random());
-		std::uniform_int_distribution<int> dist(0, 5);
+		mt19937 rng(random());
+		uniform_int_distribution<int> dist(0, 5);
 		int test = dist(rng);
 
 		difficulty = (level / 3) + (level % 3);

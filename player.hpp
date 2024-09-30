@@ -25,11 +25,13 @@ public:
 	SoundBuffer punch_buffer;
 	Sound punch_sound;
 
+	Clock punch_clock;
+
 	Player(Vector2f position, Vector2f velocity, Vector2f bodySize)
 	: Movable(position, velocity, bodySize){
 		loadTexture("spritesheets/kangaroo.png");
 		sprite.setTexture(texture);
-		body.setFillColor(sf::Color::Transparent);
+		body.setFillColor(Color::Transparent);
 		is_crouching = false;
 		is_punching = false;
 
@@ -49,19 +51,38 @@ public:
 		if(is_crouching){
 			texture_rect.top = TILE_SIZE * 1.5;
 			texture_rect.left = 0;
+			texture_rect.height = TILE_SIZE / 2;
+
+			body.setScale(facing_left ? -2.0f : 2.0f, 1.0f);
+			body.setPosition(position.x, position.y + (TILE_SIZE));
+			sprite.setPosition(position.x, position.y + (TILE_SIZE));
 		}
 		else if(is_punching){
 			texture_rect.top = TILE_SIZE;
 			texture_rect.left = TILE_SIZE * 2;
+			texture_rect.width = TILE_SIZE * 1.5;
+
+			body.setScale(facing_left ? -3.0f : 3.0f, 2.0f);
+
+			body.setPosition(facing_left ? position.x - TILE_SIZE : position.x, position.y);
+			sprite.setPosition(facing_left ? position.x - TILE_SIZE : position.x, position.y);
 		}
 
 		sprite.setTextureRect(texture_rect);
 	}
 
+	void punch_timer(){
+		if(is_punching){
+			velocity.x = 0;
+			if (punch_clock.getElapsedTime().asSeconds() >= FRAME_DURATION * 2){
+				is_punching = false;
+			}
+		}
+	}
+
 	bool controls(RenderWindow *rWindow){
 		move(rWindow);
 		is_crouching = false;
-		is_punching = false;
 
 		if((Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::Left))){
 			velocity.x = TILE_SIZE * -6;
@@ -74,21 +95,25 @@ public:
 			facing_left = false;
 		}
 
-		//actions
+		//crouch
 		if((Keyboard::isKeyPressed(Keyboard::S) || Keyboard::isKeyPressed(Keyboard::Down))){
 			is_crouching = true;
 			velocity.x = 0;
 			if(testCollision(rWindow))
 				velocity.y = TILE_SIZE * 24;
 		}
-
-		if((Keyboard::isKeyPressed(Keyboard::RShift) || Keyboard::isKeyPressed(Keyboard::LShift))){
+		//punch
+		if((Keyboard::isKeyPressed(Keyboard::RShift) || Keyboard::isKeyPressed(Keyboard::LShift))
+				&& !is_crouching && !is_punching){
 			is_punching = true;
-			velocity.x = 0;
 
+			punch_clock.restart();
 			punch_sound.play();
 		}
 
+		punch_timer();
+
+		//jump
 		if((Keyboard::isKeyPressed(sf::Keyboard::W) || Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::Space))
 				&& velocity.y == 0 && !is_crouching){
 			velocity.y += TILE_SIZE * -24;
@@ -110,7 +135,7 @@ public:
 	void player_update(RenderWindow *rWindow, vector<Platform> platforms){
 		controls(rWindow);
 		float deltaTime = deltaTimeGetter();
-		sf::Vector2f movement(velocity.x * deltaTime, velocity.y * deltaTime);
+		Vector2f movement(velocity.x * deltaTime, velocity.y * deltaTime);
 		body.move(movement);
 		changeSpriteTextures();
 		changeHitBoxSize();

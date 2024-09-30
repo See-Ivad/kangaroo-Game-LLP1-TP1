@@ -55,10 +55,10 @@ public:
 	}
 
 	float deltaTimeGetter(){
-		static auto last_frame_time = std::chrono::steady_clock::now();
-		auto current_frame_time = std::chrono::steady_clock::now();
+		static auto last_frame_time = chrono::steady_clock::now();
+		auto current_frame_time = chrono::steady_clock::now();
 
-		std::chrono::duration<float> delta = current_frame_time - last_frame_time;
+		chrono::duration<float> delta = current_frame_time - last_frame_time;
 		last_frame_time = current_frame_time;
 
 		return delta.count();

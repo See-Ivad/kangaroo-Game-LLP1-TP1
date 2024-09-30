@@ -45,7 +45,6 @@ public:
 		background_sprite.setTexture(background_texture);
 		background_sprite.setScale(2.0f, 2.0f);
 
-		enemies.push_back(Enemy(Vector2f(0, 0), Vector2f(0.0f, 0.0f), Vector2f(48, 48), level));
 		loadPlatforms(mapMatrix);
 		game_theme.openFromFile("audio/04-angel_island_zone-act_2.ogg");
 	}
