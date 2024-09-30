@@ -7,80 +7,124 @@
 #include "menu.hpp"
 
 using namespace std;
-using namespace sf;
 
 int main(){
-	vector<string> map{"XXXXXXXXXXXXXXXXXXXX",
-		"XXXXXXXXXXXXXXXXXXXX",
-		"XXXXXXXXXXXXXXXXXXXX",
-		"LLLL3XXXXXXXXXX4LLLL",
-		"@@23XXXXXXXXXXX1LLLL",
-		"DdXXXXXXXXXXXXXX12@@",
-		"TtXXXXXXXXXXXXXXXXDd",
-		"TcbbbbbbbbbbbbXXXbCt",
-		"TtXXXXXXXXXXXXXXXXTt",
-		"TtXXXXXXXXXXXXXXXXTt",
-		"TtXXXXXXXXXXXXXXXXTt",
-		"TtXXXXXXXXXXXXXXXXTt",
-		"TcbXXXbbbbbbbbbb&***",
-		"TtXXXXXXXXXXXXXX1LLL",
-		"TtXXXXXXXXXXXXXXX1@@",
-		"TtXXXXXXXXXXXXXXXXDd",
-		"TtXXXXXXXXXXXXXXXXTt",
-		"***(bbbbbbbbbXXXbbCt",
-		"LLL3XXXXXXXXXXXXXXTt",
-		"@@3XXXXXXXXXXXXXXXTt",
-		"DdXXXXXXXXXXXXXXXXTt",
-		"TtXXXXXXXXXXXXXXXXTt",
-		"---XXXXXXXXXXXXXX---"};
 
+	vector<string> map{"XXXXXXXXXXXXXXXXXXXX",
+						"XXXXXXXXXXXXXXXXXXXX",
+						"XXXXXXXXXXXXXXXXXXXX",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTbbbbbbbbbbbbXXXbTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTbXXXbbbbbbbbbbbbTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTbbbbbbbbbbbXXXbbTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"TTXXXXXXXXXXXXXXXXTT",
+						"---XXXXXXXXXXXXXX---"};
 	Game game1(map);
 
-	RenderWindow window(VideoMode(480, 552), "Menu(use the arrows and enter)");
+
+	sf::RenderWindow window(sf::VideoMode(480, 552), "Menu(use the arrows and enter)");
 
 	Menu menu(480, 552);
 
+	sf::Texture texture;
+	 if(!texture.loadFromFile("/kangaroo/spritesheets/background.png")){
+		 cout << "fundo n funfo"<<endl;
+	 }
+
+	 sf::Sprite sprite;
+	 sprite.setTexture(texture);
+
+
 	while(window.isOpen()){
-		Event event;
-		while(window.pollEvent(event)){
-			switch(event.type){
+		sf::Event event;
 
-			case Event::KeyReleased:
-				switch(event.key.code){
+			while(window.pollEvent(event)){
 
-				case Keyboard::Up :
-					menu.moveUp();
-					break;
-				case Keyboard::Down:
-					menu.moveDown();
-					break;
-				case Keyboard::Return:
-					switch(menu.getPressedItem()){
+				switch(event.type){
 
-					case 0:
-						window.close();
-						game1.run();
+				case sf::Event::KeyReleased:
+					switch(event.key.code){
+
+					case sf::Keyboard::Up :
+						menu.moveUp();
 						break;
 
-					case 1:
-						window.close();
+				case sf::Keyboard::Down:
+						menu.moveDown();
+						break;
+
+
+				case sf::Keyboard::Return:
+						switch(menu.getPressedItem()){
+
+						case 0:
+							 window.close();
+								game1.run();
+							break;
+
+						case 1:
+							window.close();
+							break;
+						}
 						break;
 					}
+
 					break;
-				}
 
-				break;
-
-				case Event::Closed:
+				case sf::Event::Closed:
 					window.close();
 					break;
+				}
 			}
-		}
 
-		window.clear();
-		menu.draw(window);
-		window.display();
+			window.clear();
+			menu.draw(window);
+			window.draw(sprite);
+			window.display();
 	}
+
+//	vector<string> map{"XXXXXXXXXXXXXXXXXXXX",
+//						"XXXXXXXXXXXXXXXXXXXX",
+//						"XXXXXXXXXXXXXXXXXXXX",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTbbbbbbbbbbbbXXXbTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTbXXXbbbbbbbbbbbbTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTbbbbbbbbbbbXXXbbTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"TTXXXXXXXXXXXXXXXXTT",
+//						"---XXXXXXXXXXXXXX---"};
+//
+//	Game game1(map);
+//	game1.run();
+
+
 	return 0;
 }
 
