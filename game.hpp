@@ -35,7 +35,7 @@ public:
 	Game(vector<string> mapMatrix) :
 		windowSize(480, 552),
 		window(VideoMode(windowSize.x, windowSize.y), "Rescue The Kangaroo!"),
-		position(windowSize.x * 3 / 20, windowSize.y * 17 / 22),
+		position(windowSize.x * 3 / 20, windowSize.y * 19 / 22),
 		velocity(0.0f, 0.0f),
 		size(48, 48),
 		player(position, velocity, size),
@@ -53,15 +53,12 @@ public:
 	void loadPlatforms(const vector<string>& mapMatrix){
 		for(size_t i = 0; i < mapMatrix.size(); ++i){
 			for(size_t j = 0; j < 20; ++j){
-				if(mapMatrix[i][j] != 'X' && mapMatrix[i][j] != 'h'){
+				if(mapMatrix[i][j] != 'X' && mapMatrix[i][j] != 'V' && mapMatrix[i][j] != 'v'){
 					Platform * platform = new Platform(Vector2f(j * 24, i * 24), Vector2f(24, 24));
 					platform->assignTexture(mapMatrix[i][j]);
 					platforms.push_back(platform);
-					//cout << "platform created at (" << j * 24 << ", " << i * 24 << ")" << endl;
 				}
-
-				else if(mapMatrix[i][j] == 'h'){
-
+				else if(mapMatrix[i][j] == 'V' || mapMatrix[i][j] == 'v'){
 					Ladder * ladder = new Ladder(Vector2f(j * 24, i * 24), Vector2f(24, 24));
 					ladder->assignTexture(mapMatrix[i][j]);
 					ladders.push_back(ladder);
@@ -74,9 +71,8 @@ public:
 		for(auto& platform : platforms){
 			platform->draw(&window);
 		}
-
-		for(auto& Ladder : ladders){
-					Ladder->draw(&window);
+		for(auto& ladder : ladders){
+			ladder->draw(&window);
 		}
 	}
 
@@ -108,6 +104,9 @@ public:
 	void finish(){
 		for(unsigned int i = 0; i < platforms.size(); i++){
 			delete platforms.at(i);
+		}
+		for(unsigned int i = 0; i < ladders.size(); i++){
+			delete ladders.at(i);
 		}
 	}
 };

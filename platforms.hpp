@@ -26,7 +26,7 @@ public:
 		sprite.setPosition(position);
 	}
 
-	void setTexture(const sf::Texture& texture){
+	void setTexture(const Texture& texture){
 		block.setTexture(&texture);
 	}
 
@@ -42,7 +42,7 @@ public:
 		texture_rect.width = BLOCK_SIZE;
 		texture_rect.height = BLOCK_SIZE;
 
-		switch (type) {
+		switch(type){
 		//tree trunks
 		case 'T':
 			texture_rect.top = BLOCK_SIZE * 3;
@@ -113,6 +113,15 @@ public:
 			texture_rect.left = BLOCK_SIZE * 30;
 			break;
 
+		//ladders
+		case 'v':
+			texture_rect.top = BLOCK_SIZE * 2;
+			texture_rect.left = BLOCK_SIZE;
+			break;
+		case 'V':
+			texture_rect.top = BLOCK_SIZE * 2;
+			texture_rect.left = 0;
+			break;
 
 		case 'b':
 			texture_rect.top = 0;

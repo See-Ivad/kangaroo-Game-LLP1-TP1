@@ -30,7 +30,7 @@ public:
 	Clock punch_clock;
 
 	Player(Vector2f position, Vector2f velocity, Vector2f bodySize) :
-			Movable(position, velocity, bodySize) {
+		Movable(position, velocity, bodySize) {
 		loadTexture("spritesheets/kangaroo.png");
 		sprite.setTexture(texture);
 		body.setFillColor(Color::Transparent);
@@ -69,7 +69,7 @@ public:
 					position.y);
 			sprite.setPosition(
 					facing_left ? position.x - TILE_SIZE : position.x,
-					position.y);
+							position.y);
 		}
 
 		sprite.setTextureRect(texture_rect);
@@ -132,28 +132,20 @@ public:
 		}
 
 		if ((Keyboard::isKeyPressed(Keyboard::E)
-				|| Keyboard::isKeyPressed(Keyboard::P)) && !is_crouching) {
-
-			for (auto &Ladder : escada) {
-
-				if (testCollision(Ladder->getBody())) { //colisao com a escada
-
-
+				|| Keyboard::isKeyPressed(Keyboard::P)) && !is_crouching){
+			for (auto &Ladder : escada){
+				if (testCollision(Ladder->getBody())){ //colisao com a escada
 					velocity.y -= 3;
-
 				}
 			}
 		}
 
-		for (auto &plataforma : platforms) {
-
-			if (testCollision(plataforma->getBody())) { //colisao com a plataforma
+		for(auto &plataforma : platforms){
+			if(testCollision(plataforma->getBody())){   //colisao com a plataforma
 														//incompleta
 				velocity.y = 0;
-
 			}
 		}
-
 		return true;
 	}
 
@@ -170,4 +162,3 @@ public:
 };
 
 #endif /* PLAYER_HPP_ */
-

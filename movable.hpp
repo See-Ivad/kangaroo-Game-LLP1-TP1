@@ -114,7 +114,6 @@ public:
 			velocity.x = 0;
 		}
 
-
 		return true;
 	}
 
