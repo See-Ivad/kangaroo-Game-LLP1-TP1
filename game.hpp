@@ -42,12 +42,18 @@ public:
 		level(0),
 		points(0)
 	{
-		background_texture.loadFromFile("spritesheets/background.png");
+		if(!background_texture.loadFromFile("spritesheets/background.png")){
+			std::cerr << "Unable to open \"spritesheets/background.png\"" << std::endl;
+			std::exit(EXIT_FAILURE);
+		}
 		background_sprite.setTexture(background_texture);
 		background_sprite.setScale(2.0f, 2.0f);
 
 		loadPlatforms(mapMatrix);
-		game_theme.openFromFile("audio/04-angel_island_zone-act_2.ogg");
+		if(!game_theme.openFromFile("audio/04-angel_island_zone-act_2.ogg")){
+			std::cerr << "Unable to open \"audio/04-angel_island_zone-act_2.ogg\"" << std::endl;
+			std::exit(EXIT_FAILURE);
+		}
 	}
 
 	void loadPlatforms(const vector<string>& mapMatrix){
@@ -87,16 +93,21 @@ public:
 
 	void run(){
 		game_theme.setLoop(true);
-		game_theme.play();
-
-		while (window.isOpen()){
+		//game_theme.play();
+		Clock time;
+		while (window.isOpen()){ //Loop de eventos
 			Event event;
+			Time deltaTime;
+			deltaTime = time.restart();
+
 			while (window.pollEvent(event)){
-				if (event.type == Event::Closed)
+				if (event.type == Event::Closed){
 					window.close();
+					exit(EXIT_SUCCESS);
+				}
 			}
 
-			player.player_update(&window, platforms, ladders);
+			player.player_update(&window, platforms, ladders, deltaTime.asSeconds());
 			render();
 		}
 	}
