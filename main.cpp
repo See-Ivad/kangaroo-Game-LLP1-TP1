@@ -11,82 +11,13 @@ using namespace std;
 using namespace sf;
 
 int main(){
-	vector<string> map{"XXXXXXXXXXXXXXXXXXXX",
-						"XXXXXXXXXXXXXXXXXXXX",
-						"XXXXXXXXXXXXXXXXXXXX",
-						"LLLL3XXXXXXXXXXX4LLL",
-						"@@23XXXXXXXXXXXXX1LL",
-						"DdXXXXXXXXXXXXXXXX1@",
-						"TtXXXXXXXXXXXXXXXXDd",
-						"TcbbbbbbbbbbbbvvvbCt",
-						"TtXXXXXXXXXXXXVVVXTt",
-						"TtXXXXXXXXXXXXVVVXTt",
-						"TtXXXXXXXXXXXXVVVXTt",
-						"TtXXXXXXXXXXXXVVVXTt",
-						"Tcbvvvbbbbbbbbbb&***",
-						"TtXVVVXXXXXXXXXX1LLL",
-						"TtXVVVXXXXXXXXXXX1@@",
-						"TtXVVVXXXXXXXXXXXXDd",
-						"TtXVVVXXXXXXXXXXXXTt",
-						"***(bbbbbbbbbbvvvbCt",
-						"LLL3XXXXXXXXXXVVVXTt",
-						"@@3XXXXXXXXXXXVVVXTt",
-						"DdXXXXXXXXXXXXVVVXTt",
-						"TtXXXXXXXXXXXXVVVXTt",
-						"---XXXXXXXXXXXXXX---"};
-	Game game1(map);
 
-	RenderWindow window(VideoMode(480, 552), "Menu (use the arrows and enter)");
+	Menu menu;
+	Game game1(menu.getPointWindow());
 
-	Menu menu(480, 552);
-	Texture texture;
+	if(menu.start())
+		game1.run();
 
-	if(!texture.loadFromFile("spritesheets/menu.png")){
-		std::cerr << "Unable to open \"spritesheets/menu.png\"" << std::endl;
-		std::exit(EXIT_FAILURE);
-	}
-
-	Sprite sprite;
-	sprite.setTexture(texture);
-	sprite.setScale(2.0f, 2.0f);
-
-	while(window.isOpen()){
-		Event event;
-
-		while(window.pollEvent(event)){
-
-			switch(event.type){
-			case Event::KeyReleased:
-				switch(event.key.code){
-				case Keyboard::Up :
-					menu.moveUp();
-					break;
-				case Keyboard::Down:
-					menu.moveDown();
-					break;
-				case Keyboard::Return:
-					switch(menu.getPressedItem()){
-					case 0:
-						window.close();
-						game1.run();
-						break;
-					case 1:
-						window.close();
-						break;
-					}
-					break;
-				}
-				break;
-				case Event::Closed:
-					window.close();
-					break;
-			}
-		}
-
-		window.clear();
-		window.draw(sprite);
-		menu.draw(window);
-		window.display();
-	}
+	cout << "Game close" << endl;
 	return 0;
 }

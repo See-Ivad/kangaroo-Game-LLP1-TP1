@@ -17,7 +17,7 @@ using namespace sf;
 
 class Enemy : public Movable{
 public:
-	float spawn_rate = 2; //normal de 2s
+	float spawn_rate = 2.0; //normal de 2s
 	int difficulty;
 
 	Enemy(Vector2f position, Vector2f velocity, Vector2f bodySize, int difficulty)
