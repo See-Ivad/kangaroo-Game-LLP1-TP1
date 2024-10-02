@@ -65,6 +65,8 @@ public:
 		return delta.count();
 	}
 
+
+
 	void loadTexture(string filename){
 		if (!texture.loadFromFile(filename)){
 		}
@@ -96,6 +98,8 @@ public:
 		sprite.setTextureRect(texture_rect);
 		sprite.setScale(facing_left ? -2.0f : 2.0f, 2.0f);
 	}
+
+
 
 	void setOriginMiddle(){
 		Vector2f sizeBody = body.getSize();
