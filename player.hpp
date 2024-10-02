@@ -20,6 +20,7 @@ public:
 	bool has_gloves = true;
 	bool is_crouching;
 	bool is_punching;
+	bool grounded;
 
 	SoundBuffer jump_buffer;
 	Sound jump_sound;
@@ -36,6 +37,7 @@ public:
 		body.setFillColor(Color::Transparent);
 		is_crouching = false;
 		is_punching = false;
+		grounded = false;
 
 		jump_buffer.loadFromFile("audio/player_jump_S3K_62.wav");
 		jump_sound.setBuffer(jump_buffer);
@@ -85,8 +87,7 @@ public:
 		}
 	}
 
-	bool controls(RenderWindow *rWindow, vector<Ladder*> escada, vector<Platform*> platforms) {
-		move(rWindow);
+	bool controls(RenderWindow *rWindow, float deltaTime) {
 		is_crouching = false;
 
 		if ((Keyboard::isKeyPressed(Keyboard::A)
@@ -103,12 +104,11 @@ public:
 
 		//crouch
 		if ((Keyboard::isKeyPressed(Keyboard::S)
-				|| Keyboard::isKeyPressed(Keyboard::Down))) {
+				|| Keyboard::isKeyPressed(Keyboard::Down)) && grounded) {
 			is_crouching = true;
 			velocity.x = 0;
-			if (testCollision(rWindow))
-				velocity.y = TILE_SIZE * 24;
 		}
+
 		//punch
 		if ((Keyboard::isKeyPressed(Keyboard::RShift)
 				|| Keyboard::isKeyPressed(Keyboard::LShift)) && !is_crouching
@@ -125,37 +125,78 @@ public:
 		if ((Keyboard::isKeyPressed(sf::Keyboard::W)
 				|| Keyboard::isKeyPressed(Keyboard::Up)
 				|| Keyboard::isKeyPressed(Keyboard::Space)) && velocity.y == 0
-				&& !is_crouching) {
+				&& !is_crouching && grounded) {
 			velocity.y += TILE_SIZE * -24;
-
+			grounded = false;
 			jump_sound.play();
 		}
 
-		if ((Keyboard::isKeyPressed(Keyboard::E)
-				|| Keyboard::isKeyPressed(Keyboard::P)) && !is_crouching){
-			for (auto &Ladder : escada){
-				if (testCollision(Ladder->getBody())){ //colisao com a escada
-					velocity.y -= 3;
-				}
-			}
-		}
-
-		for(auto &plataforma : platforms){
-			if(testCollision(plataforma->getBody())){   //colisao com a plataforma
-														//incompleta
-				velocity.y = 0;
-			}
-		}
 		return true;
 	}
 
-	void player_update(RenderWindow *rWindow, vector<Platform*> platforms,
-			vector<Ladder*> escada) {
-		controls(rWindow, escada, platforms);
-		float deltaTime = deltaTimeGetter();
-		Vector2f movement(velocity.x * deltaTime, velocity.y * deltaTime);
-		body.move(movement);
+	bool move(RenderWindow *rWindow, float deltaTime, vector<Platform*> platforms, vector<Ladder*> escada){
+		float gravity = 3.5f;
+
+		if(!grounded){
+		velocity.y += gravity;
+		}
+
+		if((Keyboard::isKeyPressed(Keyboard::E) || Keyboard::isKeyPressed(Keyboard::P)) && !is_crouching){
+			bool collision = false;
+			for(auto &Ladder : escada){
+				if(testCollision(Ladder->getBody())){
+					grounded = false;
+					collision = true;
+				}
+			}
+			if(collision)
+				velocity.y += -4.f;
+		}
+
+		body.move(0.f,velocity.y * deltaTime);
+		for(auto &platform : platforms){
+			if(testCollision(rWindow) || testCollision(platform->getBody())){
+				while(testCollision(rWindow) || testCollision(platform->getBody())){
+					if(velocity.y >= 0.f){
+						body.move(0.f,-1.f);
+					}else{
+						body.move(0.f,1.f);
+					}
+				}
+				if(velocity.y >= 0.f)
+					grounded = true;
+				velocity.y = 0.f;
+				position = body.getPosition();
+			}
+		}
+
+		body.move(velocity.x * deltaTime,0.f);
+		for(auto &platform : platforms){
+			if(testCollision(rWindow) || testCollision(platform->getBody())){
+				while(testCollision(rWindow) || testCollision(platform->getBody())){
+					if(velocity.x >= 0.f){
+						body.move(-1.f,0.f);
+					}else{
+						body.move(1.f,0.f);
+					}
+				}
+				position = body.getPosition();
+			}
+		}
+
+		velocity.x = 0;
+		return true;
+	}
+
+	void player_update(RenderWindow *rWindow, vector<Platform*> platforms,vector<Ladder*> escada, float deltaTime){
+
+		controls(rWindow, deltaTime);
+
+		cout << "velocity y: " << velocity.y << endl;
+		cout << "Delta time : " << deltaTime << endl;
+
 		changeSpriteTextures();
+		move(rWindow, deltaTime, platforms, escada);
 		changeHitBoxSize();
 		draw(rWindow);
 	}
