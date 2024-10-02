@@ -14,7 +14,7 @@ using namespace sf;
 class Game{
 private:
 	Vector2f windowSize;
-	RenderWindow window;
+	RenderWindow * window;
 
 	Vector2f position;
 	Vector2f velocity;
@@ -23,6 +23,7 @@ private:
 	vector<Platform *> platforms;
 	vector<Ladder *> ladders;
 	vector<Enemy *> enemies;
+	vector<string> mapMatrix;
 
 	Texture background_texture;
 	Sprite background_sprite;
@@ -32,9 +33,8 @@ private:
 	Music game_theme;
 
 public:
-	Game(vector<string> mapMatrix) :
+	Game(RenderWindow* rWindow) :
 		windowSize(480, 552),
-		window(VideoMode(windowSize.x, windowSize.y), "Rescue The Kangaroo!"),
 		position(windowSize.x * 3 / 20, windowSize.y * 19 / 22),
 		velocity(0.0f, 0.0f),
 		size(48, 48),
@@ -42,6 +42,8 @@ public:
 		level(0),
 		points(0)
 	{
+		window = rWindow;
+
 		if(!background_texture.loadFromFile("spritesheets/background.png")){
 			std::cerr << "Unable to open \"spritesheets/background.png\"" << std::endl;
 			std::exit(EXIT_FAILURE);
@@ -49,22 +51,111 @@ public:
 		background_sprite.setTexture(background_texture);
 		background_sprite.setScale(2.0f, 2.0f);
 
-		loadPlatforms(mapMatrix);
+		defineMapMatrix();
+		loadPlatforms();
+
 		if(!game_theme.openFromFile("audio/04-angel_island_zone-act_2.ogg")){
 			std::cerr << "Unable to open \"audio/04-angel_island_zone-act_2.ogg\"" << std::endl;
 			std::exit(EXIT_FAILURE);
 		}
 	}
 
-	void loadPlatforms(const vector<string>& mapMatrix){
+	void defineMapMatrix(){
+		int map = level % 3;
+
+		if(map == 0){
+			mapMatrix = {
+					"XXXXXXXXXXXXXXXXXXXX",
+					"XXXXXXXXXXXXXXXXXXXX",
+					"XXXXXXXXXXXXXXXXXXXX",
+					"LLLL3XXXXXXXXXXX4LLL",
+					"@@23XXXXXXXXXXXXX1LL",
+					"DdXXXXXXXXXXXXXXXX1@",
+					"TtXXXXXXXXXXXXXXXXDd",
+					"TcbbbbbbbbbbbbvvvbCt",
+					"TtXXXXXXXXXXXXVVVXTt",
+					"TtXXXXXXXXXXXXVVVXTt",
+					"TtXXXXXXXXXXXXVVVXTt",
+					"TtXXXXXXXXXXXXVVVXTt",
+					"Tcbvvvbbbbbbbbbb&***",
+					"TtXVVVXXXXXXXXXX1LLL",
+					"TtXVVVXXXXXXXXXXX1@@",
+					"TtXVVVXXXXXXXXXXXXDd",
+					"TtXVVVXXXXXXXXXXXXTt",
+					"***(bbbbbbbbbbvvvbCt",
+					"LLL3XXXXXXXXXXVVVXTt",
+					"@@3XXXXXXXXXXXVVVXTt",
+					"DdXXXXXXXXXXXXVVVXTt",
+					"TtXXXXXXXXXXXXVVVXTt",
+					"---XXXXXXXXXXXXXX---"};
+		}
+		//needs to be changed - NOT FINAL
+		if(map == 1){
+			mapMatrix = {
+					"-IIIIIIIIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
+					"LLLL3XXXXXXXXXX4LLLL",
+					"@@23XXXXXXXXXXX1LLLL",
+					"DdXXXXXXXXXXXXXX12@@",
+					"TtXXXXXXXXXXXXvvvXDd",
+					"TcbbbbbbbbbbbbvvvbCt",
+					"TtXXXXXXXXXXXXXXXXTt",
+					"TtXXXXXXXXXXXXXXXXTt",
+					"TtXXXXXXXXXXXXXXXXTt",
+					"TtXvvvXXXXXXXXXXXXTt",
+					"Tcbvvvbbbbbbbbbb&***",
+					"TtXXXXXXXXXXXXXX1LLL",
+					"TtXXXXXXXXXXXXXXX1@@",
+					"TtXXXXXXXXXXXXXXXXDd",
+					"TtXXXXXXXXXXXXvvvXTt",
+					"***(bbbbbbbbbbvvvbCt",
+					"LLL3XXXXXXXXXXXXXXTt",
+					"@@3XXXXXXXXXXXXXXXTt",
+					"DdXXXXXXXXXXXXXXXXTt",
+					"TtXXXXXXXXXXXXXXXXTt",
+					"--------------------"};
+		}
+		//needs to be changed - NOT FINAL
+		if(map == 2){
+			mapMatrix = {
+					"I-IIIIIIIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
+					"LLLL3XXXXXXXXXX4LLLL",
+					"@@23XXXXXXXXXXX1LLLL",
+					"DdXXXXXXXXXXXXXX12@@",
+					"TtXXXXXXXXXXXXvvvXDd",
+					"TcbbbbbbbbbbbbvvvbCt",
+					"TtXXXXXXXXXXXXVVVXTt",
+					"TtXXXXXXXXXXXXVVVXTt",
+					"TtXXXXXXXXXXXXVVVXTt",
+					"TtXvvvXXXXXXXXXXXXTt",
+					"Tcbvvvbbbbbbbbbb&***",
+					"TtXVVVXXXXXXXXXX1LLL",
+					"TtXVVVXXXXXXXXXXX1@@",
+					"TtXVVVXXXXXXXXXXXXDd",
+					"TtXXXXXXXXXXXXXXXXTt",
+					"***(XXXXXXXXXXXXXXCt",
+					"LLL3XXXXXXXXXXXXXXTt",
+					"@@3XXXXXXXXXXXXXXXTt",
+					"DdXXXXXXXXXXXXXXXXTt",
+					"TtXXXXXXXXXXXXXXXXTt",
+					"--------------------"};
+		}
+	}
+
+	void loadPlatforms(){
 		for(size_t i = 0; i < mapMatrix.size(); ++i){
 			for(size_t j = 0; j < 20; ++j){
-				if(mapMatrix[i][j] != 'X' && mapMatrix[i][j] != 'V' && mapMatrix[i][j] != 'v'){
+				if(mapMatrix[i][j] != 'X' && mapMatrix[i][j] != 'I' &&
+						mapMatrix[i][j] != 'V' && mapMatrix[i][j] != 'v'){
 					Platform * platform = new Platform(Vector2f(j * 24, i * 24), Vector2f(24, 24));
 					platform->assignTexture(mapMatrix[i][j]);
 					platforms.push_back(platform);
 				}
-				else if(mapMatrix[i][j] == 'V' || mapMatrix[i][j] == 'v'){
+				else if(mapMatrix[i][j] != 'I' &&
+						(mapMatrix[i][j] == 'V' || mapMatrix[i][j] == 'v')){
 					Ladder * ladder = new Ladder(Vector2f(j * 24, i * 24), Vector2f(24, 24));
 					ladder->assignTexture(mapMatrix[i][j]);
 					ladders.push_back(ladder);
@@ -83,31 +174,31 @@ public:
 	}
 
 	void render(){
-		window.clear();
-		window.draw(background_sprite);
-		drawPlatforms(window);
-		player.draw(&window);
+		window->clear();
+		window->draw(background_sprite);
+		drawPlatforms(*window);
+		player.draw(window);
 
-		window.display();
+		window->display();
 	}
 
 	void run(){
 		game_theme.setLoop(true);
-		//game_theme.play();
+		game_theme.play();
 		Clock time;
-		while (window.isOpen()){ //Loop de eventos
+		while (window->isOpen()){ //Loop de eventos
 			Event event;
 			Time deltaTime;
 			deltaTime = time.restart();
 
-			while (window.pollEvent(event)){
-				if (event.type == Event::Closed){
-					window.close();
+			while (window->pollEvent(event)){
+				if (event.type == Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape)){
+					window->close();
 					exit(EXIT_SUCCESS);
 				}
 			}
 
-			player.player_update(&window, platforms, ladders, deltaTime.asSeconds());
+			player.player_update(window, platforms, ladders, deltaTime.asSeconds());
 			render();
 		}
 	}
