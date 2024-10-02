@@ -12,7 +12,10 @@ public:
 	Ladder(Vector2f position, Vector2f blockSize)
 		: Platform(position, blockSize)
 	{
-		loadTexture("spritesheets/tileset.png");
+		if(!texture.loadFromFile("spritesheets/tileset.png")){
+			std::cerr << "Unable to open \"spritesheets/tileset.png\"" << std::endl;
+			std::exit(EXIT_FAILURE);
+		}
 		block.setFillColor(Color::Transparent);
 		block.setTexture(&texture);
 		sprite.setTexture(texture);
