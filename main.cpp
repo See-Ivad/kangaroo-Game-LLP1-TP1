@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <cmath>
 #include "movable.hpp"
 #include "player.HPP"
 #include "game.hpp"
@@ -13,9 +14,9 @@ int main(){
 	vector<string> map{"XXXXXXXXXXXXXXXXXXXX",
 						"XXXXXXXXXXXXXXXXXXXX",
 						"XXXXXXXXXXXXXXXXXXXX",
-						"LLLL3XXXXXXXXXX4LLLL",
-						"@@23XXXXXXXXXXX1LLLL",
-						"DdXXXXXXXXXXXXXX12@@",
+						"LLLL3XXXXXXXXXXX4LLL",
+						"@@23XXXXXXXXXXXXX1LL",
+						"DdXXXXXXXXXXXXXXXX1@",
 						"TtXXXXXXXXXXXXXXXXDd",
 						"TcbbbbbbbbbbbbvvvbCt",
 						"TtXXXXXXXXXXXXVVVXTt",
@@ -41,7 +42,8 @@ int main(){
 	Texture texture;
 
 	if(!texture.loadFromFile("spritesheets/menu.png")){
-		cout << "fundo n funfo"<<endl;
+		std::cerr << "Unable to open \"spritesheets/menu.png\"" << std::endl;
+		std::exit(EXIT_FAILURE);
 	}
 
 	Sprite sprite;

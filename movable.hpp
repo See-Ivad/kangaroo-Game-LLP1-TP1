@@ -35,18 +35,18 @@ public:
 	}
 
 	bool testCollision(RenderWindow *rWindow){ //with window
-		FloatRect window(body.getSize().x,body.getSize().y,rWindow->getSize().x - (body.getSize().x * 2),rWindow->getSize().y - (body.getSize().y * 2));
 
-		if(body.getGlobalBounds().intersects(window)){
+		position = body.getPosition();
+		if((position.x + body.getSize().x) >= 480.f || position.x <= 0 || (position.y + body.getSize().y) >= 552 || position.y <= 0){
+			cout << "não ta na janela" << endl;
 			return true;
-			cout << "colisao tela" << endl;
-		}
-		else{
+		}else{
 			return false;
 		}
 	}
 
 	bool testCollision(RectangleShape object){
+		position = body.getPosition();
 		if(body.getGlobalBounds().intersects(object.getGlobalBounds())){
 			return true;
 		}
@@ -95,26 +95,6 @@ public:
 		}
 		sprite.setTextureRect(texture_rect);
 		sprite.setScale(facing_left ? -2.0f : 2.0f, 2.0f);
-	}
-
-	bool move(RenderWindow *rWindow){
-		float delta_time = deltaTimeGetter();
-		float gravity = TILE_SIZE * 128 * delta_time;
-
-		if(testCollision(rWindow)){
-			velocity.y += gravity;
-		}
-		position += velocity * delta_time;
-		body.setPosition(position);
-
-		velocity.x = 0;
-
-		if(!testCollision(rWindow)){
-			velocity.y = 0;
-			velocity.x = 0;
-		}
-
-		return true;
 	}
 
 	void setOriginMiddle(){
@@ -181,35 +161,4 @@ public:
 		draw(rWindow);
 	}
 };
-		// Checar colisões com plataformas
-		//		for (int i = 0; i < platforms.size(); i++) {
-		//			if (body.getGlobalBounds().intersects(platforms[i].getBounds())) {
-		//				// Resolvendo a colisão vertical
-		//				if (velocity.y > 0) { // O player está caindo
-		//					body.setPosition(body.getPosition().x, platforms[i].getBounds().width);
-		//					movement.x = 0;
-		//					movement.y *= -1;
-		//					body.move(movement);
-		//					velocity.y = 0;
-		//				}
-		//			}
-		//		}
-
-		// Checar colisões com as bordas da janela
-		//		if (body.getPosition().x < 0) {
-		//			body.setPosition(0, body.getPosition().y);
-		//			velocity.x = 0;
-		//		}
-		//		if (body.getPosition().x + body.getSize().x > rWindow -> getSize().x) {
-		//			body.setPosition(rWindow -> getSize().x - body.getSize().x, body.getPosition().y);
-		//			velocity.x = 0;
-		//		}
-		//		if (body.getPosition().y < 0) {
-		//			body.setPosition(body.getPosition().x, 0);
-		//			velocity.y = 0;
-		//		}
-		//		if (body.getPosition().y + body.getSize().y > rWindow -> getSize().y) {
-		//			body.setPosition(body.getPosition().x, rWindow -> getSize().y - body.getSize().y);
-		//			velocity.y = 0;
-		//		}
 #endif /* MOVABLE_HPP_ */

@@ -4,7 +4,8 @@ using namespace sf;
 
 Menu::Menu(float width, float height){
 	if(!font.loadFromFile("fonts/Pingsan.ttf")){
-		//em caso de erro
+		std::cerr << "Unable to open \"fonts/Pingsan.ttf\"" << std::endl;
+		std::exit(EXIT_FAILURE);
 	}
 	menu[0].setFont(font);
 	menu[0].setColor(Color{0xDA4824FF}); //red
@@ -48,12 +49,3 @@ void Menu::moveDown(){
 		menu[selectedItemIndex].setColor(Color{0xDA4824FF});
 	}
 }
-
-
-
-
-
-
-
-
-
