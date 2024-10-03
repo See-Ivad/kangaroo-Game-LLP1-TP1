@@ -113,7 +113,7 @@ public:
 			texture_rect.left = BLOCK_SIZE * 30;
 			break;
 
-		//ladders
+			//ladders
 		case 'v':
 			texture_rect.top = BLOCK_SIZE * 2;
 			texture_rect.left = BLOCK_SIZE;
@@ -121,6 +121,29 @@ public:
 		case 'V':
 			texture_rect.top = BLOCK_SIZE * 2;
 			texture_rect.left = 0;
+			break;
+
+			//suspended platforms
+		case 's':
+			texture_rect.top = BLOCK_SIZE * 5;
+			texture_rect.left = BLOCK_SIZE * 2;
+			break;
+		case 'l':
+			texture_rect.top = BLOCK_SIZE * 6;
+			texture_rect.left = BLOCK_SIZE * 2;
+			break;
+		case 'm':
+			texture_rect.top = BLOCK_SIZE * 6;
+			texture_rect.left = BLOCK_SIZE * 3;
+			break;
+		case 'r':
+			texture_rect.top = BLOCK_SIZE * 6;
+			texture_rect.left = BLOCK_SIZE * 4;
+			break;
+
+		case 'I': //interface barrier
+			texture_rect.top = 0;
+			texture_rect.left = BLOCK_SIZE * 3;
 			break;
 
 		case 'b':

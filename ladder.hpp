@@ -7,6 +7,9 @@ using namespace sf;
 
 class Ladder : public Platform{
 public:
+
+	bool halfSolid;
+
 	Ladder();
 
 	Ladder(Vector2f position, Vector2f blockSize)
@@ -20,6 +23,7 @@ public:
 		block.setTexture(&texture);
 		sprite.setTexture(texture);
 		sprite.setPosition(position);
+		halfSolid = false;
 	}
 };
 

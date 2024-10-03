@@ -41,7 +41,7 @@ public:
 		velocity(0.0f, 0.0f),
 		size(48, 48),
 		player(position, velocity, size),
-		level(0),
+		level(2),
 		lives(3),
 		points(0)
 	{
@@ -68,12 +68,12 @@ public:
 
 		if(map == 0){
 			mapMatrix = {
-					"---X---XXXXXXXXXXXXX",
-					"-X-X-X-XXXXXXXXXXXXX",
-					"---X---XXXXXXXXXXXXX",
-					"LLLL3XXXXXXXXXXX4LLL",
-					"@@23XXXXXXXXXXXXX1LL",
-					"DdXXXXXXXXXXXXXXXX1@",
+					"IIIIIIIIIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
+					"LLLL3XXXXXXXXXX4LLLL",
+					"@@23XXXXXXXXXXX1LLLL",
+					"DdXXXXXXXXXXXXXX12@@",
 					"TtXXXXXXXXXXXXXXXXDd",
 					"TcbbbbbbbbbbbbvvvbCt",
 					"TtXXXXXXXXXXXXVVVXTt",
@@ -90,59 +90,57 @@ public:
 					"@@3XXXXXXXXXXXVVVXTt",
 					"DdXXXXXXXXXXXXVVVXTt",
 					"TtXXXXXXXXXXXXVVVXTt",
-					"---XXXXXXXXXXXXXX---"};
+					"--------------------"};
 		}
-		//needs to be changed - NOT FINAL
 		if(map == 1){
 			mapMatrix = {
-					"---III-IIIIIIIIIIIII",
-					"-I-III-IIIIIIIIIIIII",
-					"---III-IIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
 					"LLLL3XXXXXXXXXX4LLLL",
 					"@@23XXXXXXXXXXX1LLLL",
 					"DdXXXXXXXXXXXXXX12@@",
-					"TtXXXXXXXXXXXXvvvXDd",
-					"TcbbbbbbbbbbbbvvvbCt",
-					"TtXXXXXXXXXXXXXXXXTt",
-					"TtXXXXXXXXXXXXXXXXTt",
-					"TtXXXXXXXXXXXXXXXXTt",
-					"TtXvvvXXXXXXXXXXXXTt",
-					"Tcbvvvbbbbbbbbbb&***",
-					"TtXXXXXXXXXXXXXX1LLL",
-					"TtXXXXXXXXXXXXXXX1@@",
 					"TtXXXXXXXXXXXXXXXXDd",
-					"TtXXXXXXXXXXXXvvvXTt",
-					"***(bbbbbbbbbbvvvbCt",
-					"LLL3XXXXXXXXXXXXXXTt",
-					"@@3XXXXXXXXXXXXXXXTt",
-					"DdXXXXXXXXXXXXXXXXTt",
+					"TcbbbbbbbbbbbbvvvbCt",
+					"TtXXXXXXXsXsXXsXsXTt",
+					"TtXXXXXXXsXsXXsXsXTt",
+					"TtXXXXXXXsXsXXsXsXTt",
+					"TtXXXXXXXsXsXXlmrXTt",
+					"TcbvvvXXXlmrXXXb&***",
+					"TtXsXsXXXXXXXXXX1LLL",
+					"TtXsXsXXXXXXXXXXX1@@",
+					"TtXlmrXXXXXXXXXXXXDd",
+					"TtXXXXXXXXXXXXXXXXTt",
+					"***(bbbbbbbXXXvvvbCt",
+					"LLL3XXXXXXXXXXsXsXTt",
+					"@@3XXXXXXXXXXXsXsXTt",
+					"DdXXXXXXXXXXXXlmrXTt",
 					"TtXXXXXXXXXXXXXXXXTt",
 					"--------------------"};
 		}
-		//needs to be changed - NOT FINAL
 		if(map == 2){
 			mapMatrix = {
-					"II-I---IIIIIIIIIIIII",
-					"II-I-I-IIIIIIIIIIIII",
-					"II-I---IIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
 					"LLLL3XXXXXXXXXX4LLLL",
 					"@@23XXXXXXXXXXX1LLLL",
 					"DdXXXXXXXXXXXXXX12@@",
-					"TtXXXXXXXXXXXXvvvXDd",
-					"TcbbbbbbbbbbbbvvvbCt",
-					"TtXXXXXXXXXXXXVVVXTt",
-					"TtXXXXXXXXXXXXVVVXTt",
-					"TtXXXXXXXXXXXXVVVXTt",
-					"TtXvvvXXXXXXXXXXXXTt",
-					"Tcbvvvbbbbbbbbbb&***",
-					"TtXVVVXXXXXXXXXX1LLL",
-					"TtXVVVXXXXXXXXXXX1@@",
-					"TtXVVVXXXXXXXXXXXXDd",
-					"TtXXXXXXXXXXXXXXXXTt",
-					"***(XXXXXXXXXXXXXXCt",
-					"LLL3XXXXXXXXXXXXXXTt",
-					"@@3XXXXXXXXXXXXXXXTt",
-					"DdXXXXXXXXXXXXXXXXTt",
+					"TtXXXXXXXXXXXXXXXXDd",
+					"TcbvvvbbbbbbbbvvvbCt",
+					"TtXVVVXXXXXXXXXVVXTt",
+					"TtXVVVXXXXXXXXXVVXTt",
+					"TtXVVVXXXXXXXXXVVXTt",
+					"TtXVVVXXXXXXXXXVVXTt",
+					"Tcbbbbvvvbbbbbbb&***",
+					"TtXXXXsXsXXXsXsX1LLL",
+					"TtXXXXsXsXXXsXsXX1@@",
+					"TtXXXXsXsXXXsXsXXXDd",
+					"TtXXXXlmrXXXsXsXXXTt",
+					"***(XXXXsXXXsXsbbbCt",
+					"LLL3XXXXsXXXlmrXXXTt",
+					"@@3XXXXXsXXXsXXXXXTt",
+					"DdXXXXXXlmmmrXXXXXTt",
 					"TtXXXXXXXXXXXXXXXXTt",
 					"--------------------"};
 		}
@@ -151,14 +149,13 @@ public:
 	void loadPlatforms(){
 		for(size_t i = 0; i < mapMatrix.size(); ++i){
 			for(size_t j = 0; j < 20; ++j){
-				if(mapMatrix[i][j] != 'X' && mapMatrix[i][j] != 'I' &&
-						mapMatrix[i][j] != 'V' && mapMatrix[i][j] != 'v'){
+				if(mapMatrix[i][j] != 'X' &&
+						mapMatrix[i][j] != 'V' && mapMatrix[i][j] != 'v' && mapMatrix[i][j] != 's'){
 					Platform * platform = new Platform(Vector2f(j * 24, i * 24), Vector2f(24, 24));
 					platform->assignTexture(mapMatrix[i][j]);
 					platforms.push_back(platform);
 				}
-				else if(mapMatrix[i][j] != 'I' &&
-						(mapMatrix[i][j] == 'V' || mapMatrix[i][j] == 'v')){
+				else if(mapMatrix[i][j] == 'V' || mapMatrix[i][j] == 'v' || mapMatrix[i][j] == 's'){
 					Ladder * ladder = new Ladder(Vector2f(j * 24, i * 24), Vector2f(24, 24));
 					ladder->assignTexture(mapMatrix[i][j]);
 					if(mapMatrix[i][j] == 'v')
@@ -191,11 +188,24 @@ public:
 		Vector2f position = player.getPosition();
 
 		if(position.y <= windowSize.y * 6 / 22){
+			for(unsigned int i = 0; i < platforms.size(); i++){
+				delete platforms.at(i);
+			}
+			platforms.clear();
+
+			for(unsigned int i = 0; i < ladders.size(); i++){
+				delete ladders.at(i);
+			}
+			ladders.clear();
+
 			level++;
 			defineMapMatrix();
 			loadPlatforms();
 
-			player.setPosition(Vector2f(24 * 3, 24 * 20));
+			player.isClimbing = false;
+			player.tryingClimb = false;
+			player.setPosition(Vector2f(24 * 3, 24 * 20)); //72, 480
+			cout << position.x << ", " << position.y << endl;
 
 			if(lives < 3){
 				lives++;
