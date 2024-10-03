@@ -27,7 +27,9 @@ private:
 
 	Texture background_texture;
 	Sprite background_sprite;
+
 	int level;
+	int lives;
 	int points;
 
 	Music game_theme;
@@ -40,6 +42,7 @@ public:
 		size(48, 48),
 		player(position, velocity, size),
 		level(0),
+		lives(3),
 		points(0)
 	{
 		window = rWindow;
@@ -65,9 +68,9 @@ public:
 
 		if(map == 0){
 			mapMatrix = {
-					"XXXXXXXXXXXXXXXXXXXX",
-					"XXXXXXXXXXXXXXXXXXXX",
-					"XXXXXXXXXXXXXXXXXXXX",
+					"---X---XXXXXXXXXXXXX",
+					"-X-X-X-XXXXXXXXXXXXX",
+					"---X---XXXXXXXXXXXXX",
 					"LLLL3XXXXXXXXXXX4LLL",
 					"@@23XXXXXXXXXXXXX1LL",
 					"DdXXXXXXXXXXXXXXXX1@",
@@ -92,9 +95,9 @@ public:
 		//needs to be changed - NOT FINAL
 		if(map == 1){
 			mapMatrix = {
-					"-IIIIIIIIIIIIIIIIIII",
-					"IIIIIIIIIIIIIIIIIIII",
-					"IIIIIIIIIIIIIIIIIIII",
+					"---III-IIIIIIIIIIIII",
+					"-I-III-IIIIIIIIIIIII",
+					"---III-IIIIIIIIIIIII",
 					"LLLL3XXXXXXXXXX4LLLL",
 					"@@23XXXXXXXXXXX1LLLL",
 					"DdXXXXXXXXXXXXXX12@@",
@@ -119,9 +122,9 @@ public:
 		//needs to be changed - NOT FINAL
 		if(map == 2){
 			mapMatrix = {
-					"I-IIIIIIIIIIIIIIIIII",
-					"IIIIIIIIIIIIIIIIIIII",
-					"IIIIIIIIIIIIIIIIIIII",
+					"II-I---IIIIIIIIIIIII",
+					"II-I-I-IIIIIIIIIIIII",
+					"II-I---IIIIIIIIIIIII",
 					"LLLL3XXXXXXXXXX4LLLL",
 					"@@23XXXXXXXXXXX1LLLL",
 					"DdXXXXXXXXXXXXXX12@@",
@@ -158,6 +161,8 @@ public:
 						(mapMatrix[i][j] == 'V' || mapMatrix[i][j] == 'v')){
 					Ladder * ladder = new Ladder(Vector2f(j * 24, i * 24), Vector2f(24, 24));
 					ladder->assignTexture(mapMatrix[i][j]);
+					if(mapMatrix[i][j] == 'v')
+						ladder->halfSolid = true;
 					ladders.push_back(ladder);
 				}
 			}
@@ -182,9 +187,25 @@ public:
 		window->display();
 	}
 
+	void updateLevel(){
+		Vector2f position = player.getPosition();
+
+		if(position.y <= windowSize.y * 6 / 22){
+			level++;
+			defineMapMatrix();
+			loadPlatforms();
+
+			player.setPosition(Vector2f(24 * 3, 24 * 20));
+
+			if(lives < 3){
+				lives++;
+			}
+		}
+	}
+
 	void run(){
 		game_theme.setLoop(true);
-		game_theme.play();
+		//game_theme.play();
 		Clock time;
 		while (window->isOpen()){ //Loop de eventos
 			Event event;
@@ -206,6 +227,7 @@ public:
 			}
 
 			player.player_update(window, platforms, ladders, deltaTime.asSeconds());
+			updateLevel();
 			render();
 		}
 	}
