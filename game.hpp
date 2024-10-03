@@ -196,6 +196,13 @@ public:
 					window->close();
 					exit(EXIT_SUCCESS);
 				}
+
+				if((event.type == Event::KeyReleased) && (event.key.code == Keyboard::M)){
+					if(game_theme.getStatus() == sf::SoundSource::Status::Playing)
+						game_theme.pause();
+					else if(game_theme.getStatus() == sf::SoundSource::Status::Paused)
+						game_theme.play();
+				}
 			}
 
 			player.player_update(window, platforms, ladders, deltaTime.asSeconds());
