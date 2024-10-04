@@ -41,7 +41,7 @@ public:
 		velocity(0.0f, 0.0f),
 		size(48, 48),
 		player(position, velocity, size),
-		level(2),
+		level(0),
 		lives(3),
 		points(0)
 	{
