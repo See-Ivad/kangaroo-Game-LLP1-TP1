@@ -188,6 +188,8 @@ public:
 		Vector2f position = player.getPosition();
 
 		if(position.y <= windowSize.y * 6 / 22){
+			player.isClimbing = false;
+			player.tryingClimb = false;
 			for(unsigned int i = 0; i < platforms.size(); i++){
 				delete platforms.at(i);
 			}
@@ -202,14 +204,15 @@ public:
 			defineMapMatrix();
 			loadPlatforms();
 
-			player.isClimbing = false;
-			player.tryingClimb = false;
-			player.setPosition(Vector2f(24 * 3, 24 * 20)); //72, 480
+			player.setPosition(Vector2f(24 * 3.5f, 24 * 19.5f)); //72, 480
+			player.setVelocity(Vector2f(0.0f, 0.0f));
 			cout << position.x << ", " << position.y << endl;
 
 			if(lives < 3){
 				lives++;
 			}
+			player.isClimbing = false;
+			player.tryingClimb = false;
 		}
 	}
 
