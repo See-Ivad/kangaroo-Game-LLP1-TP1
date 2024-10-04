@@ -15,6 +15,7 @@ protected:
 	Vector2f position;
 	Vector2f velocity;
 	RectangleShape body;
+	Vector2f bodySize;
 	const int TILE_SIZE = 24;
 	bool facing_left = false;
 
@@ -32,13 +33,14 @@ public:
 		this->velocity = velocity;
 		this->body.setPosition(this->position);
 		this->body.setSize(bodySize);
+		this->bodySize = bodySize;
 	}
 
 	bool testCollision(RenderWindow *rWindow){ //with window
 
 		position = body.getPosition();
 		if((position.x + body.getSize().x) >= 480.f || position.x <= 0 || (position.y + body.getSize().y) >= 552 || position.y <= 0){
-			cout << "não ta na janela" << endl;
+			cout << "n�o ta na janela" << endl;
 			return true;
 		}else{
 			return false;
@@ -106,7 +108,7 @@ public:
 		body.setOrigin(sizeBody.x / 2, sizeBody.y / 2);
 	}
 
-	void updateSpritesheetPosition(int first_frame){
+	bool updateSpritesheetPosition(int first_frame){
 		int final_frame = first_frame + TILE_SIZE;
 
 		if(animation_clock.getElapsedTime().asSeconds() > FRAME_DURATION){
@@ -118,7 +120,9 @@ public:
 			}
 
 			animation_clock.restart();
+			return true;
 		}
+		return false;
 	}
 
 	void setFacingLeft(bool left){
@@ -127,6 +131,12 @@ public:
 
 	void setVelocity(const Vector2f& velocity){
 		this->velocity = velocity;
+	}
+
+	void setPosition(const Vector2f& position){
+		this->position = position;
+		body.setPosition(position);
+		sprite.setPosition(position);
 	}
 
 	void setTexture(const Texture& texture){
@@ -154,6 +164,7 @@ public:
 			sprite.setPosition(sprite.getPosition().x + (sprite.getGlobalBounds().width * 0.5), sprite.getPosition().y);
 		}
 		window->draw(sprite);
+		//		window->draw(body);
 	}
 
 	void update(RenderWindow *rWindow){
