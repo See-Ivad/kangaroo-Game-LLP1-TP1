@@ -24,21 +24,26 @@ private:
 	vector<Platform *> platforms;
 	vector<Ladder *> ladders;
 	vector<Enemy *> enemies;
+	InfoBar infoBar;
 	vector<string> mapMatrix;
 
 	Texture background_texture;
 	Sprite background_sprite;
 
-	int level;
-	int lives;
-	int points;
+//	int level;
+//	int lives;
+//	int points;
 
 	Music game_theme;
 
-	InfoBar infoBar;//erro ""Infobar" does not name a type"
+
 
 
 public:
+
+	int level;
+	int lives;
+	int points;
 
 	Game(RenderWindow* rWindow) :
 		windowSize(480, 552),
@@ -200,9 +205,8 @@ public:
 		infoBar.draw(window);
 
 
-//		infoBar.update(lives, points, level); //erro - o mesmo do de cima
-//		infoBar.draw(window); //erro - argumento invalido
-
+//		infoBar.update(lives, points, level); //erro
+//		infoBar.draw(window); //erro
 
 		window->display();
 	}
@@ -265,6 +269,8 @@ public:
 			player.player_update(window, platforms, ladders, deltaTime.asSeconds());
 			updateLevel();
 			render();
+			infoBar.InfoBarUpdate(lives, points, level);
+			//infoBar.toString(Lives, Points, Level)
 		}
 	}
 

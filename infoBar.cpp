@@ -8,6 +8,7 @@
 
 
 
+
 using namespace sf;
 
 InfoBar::InfoBar(){
@@ -20,18 +21,23 @@ InfoBar::InfoBar(){
 
 	infoBar[0].setFont(font);
 	infoBar[0].setColor(Color{0xDADA91FF}); //white
-	infoBar[0].setString("Points");
-	infoBar[0].setPosition(Vector2f(10,10));
+	infoBar[0].setString("Points:");
+	infoBar[0].setPosition(Vector2f(10,25));
 
 	infoBar[1].setFont(font);
 	infoBar[1].setColor(Color{0xDADA91FF}); //white
-	infoBar[1].setString("level");
-	infoBar[1].setPosition(Vector2f(20, 10));
+	infoBar[1].setString("level:");
+	infoBar[1].setPosition(Vector2f(180, 25));
 
 	infoBar[2].setFont(font);
 	infoBar[2].setColor(Color{0xDADA91FF}); //white
-	infoBar[2].setString("lives");
-	infoBar[2].setPosition(sf::Vector2f(30, 10));
+	infoBar[2].setString("lives:" );
+	infoBar[2].setPosition(sf::Vector2f(330, 25));
+
+//	infoBar[3].setFont(font);
+//	infoBar[3].setColor(Color{0xDADA91FF}); //white
+//	infoBar[3].setString("lives:" << values);
+//	infoBar[3].setPosition(sf::Vector2f(330, 25));
 
 
 
@@ -40,15 +46,43 @@ InfoBar::InfoBar(){
 InfoBar::~InfoBar(){
 }
 
-void InfoBar::draw(RenderWindow &window){
+void InfoBar::draw(RenderWindow *window){
 	for(int i = 0; i < IBmaxNumbersOfItems; i++){
-		window.draw(infoBar[i]);
+		window->draw(infoBar[i]);
 	}
 }
 
-void InfoBar::InfoBarUpdate(){
+void InfoBar::InfoBarUpdate(int lives, int points, int level){
+	Lives = lives;
+	Points = points;
+	Level = level;
 
 }
+
+
+std::string toString1(int Lives) {
+    std::stringstream ss1;  // Criando um objeto stringstream
+    ss1 << Lives ;  // Inserindo o numero no stream
+    std::string value1 = toString1(Lives);
+    return ss1.str();  // Convertendo para string e retornando
+}
+
+std::string toString2(int Points) {
+    std::stringstream ss2;  // Criando um objeto stringstream
+    ss2 << Points ;  // Inserindo o numero no stream
+    std::string value2 = toString2(Points);
+    return ss2.str();  // Convertendo para string e retornando
+}
+
+std::string toString3(int Level) {
+    std::stringstream ss3;  // Criando um objeto stringstream
+    ss3 << Level;  // Inserindo o numero no stream
+    std::string value3 = toString3(Level);
+    return ss3.str();  // Convertendo para string e retornando
+}
+
+
+
 //bool Menu::start(){
 //
 //	while(window.isOpen()){
