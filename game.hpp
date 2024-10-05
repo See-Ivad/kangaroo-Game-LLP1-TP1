@@ -72,7 +72,7 @@ public:
 					"@@23XXXXXXXXXXXXX1LL",
 					"DdXXXXXXXXXXXXXXXX1@",
 					"TtXXXXXXXXXXXXXXXXDd",
-					"TcbbbbbbbbbbbbvvvbCt",
+					"TcbbbbbXXXbbbbvvvbCt",
 					"TtXXXXXXXXXXXXVVVXTt",
 					"TtXXXXXXXXXXXXVVVXTt",
 					"TtXXXXXXXXXXXXVVVXTt",
@@ -158,6 +158,8 @@ public:
 						(mapMatrix[i][j] == 'V' || mapMatrix[i][j] == 'v')){
 					Ladder * ladder = new Ladder(Vector2f(j * 24, i * 24), Vector2f(24, 24));
 					ladder->assignTexture(mapMatrix[i][j]);
+					if(mapMatrix[i][j] == 'v')
+						ladder->halfSolid = true;
 					ladders.push_back(ladder);
 				}
 			}
@@ -195,6 +197,13 @@ public:
 				if (event.type == Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape)){
 					window->close();
 					exit(EXIT_SUCCESS);
+				}
+
+				if((event.type == Event::KeyReleased) && (event.key.code == Keyboard::M)){
+					if(game_theme.getStatus() == sf::SoundSource::Status::Playing)
+						game_theme.pause();
+					else if(game_theme.getStatus() == sf::SoundSource::Status::Paused)
+						game_theme.play();
 				}
 			}
 
