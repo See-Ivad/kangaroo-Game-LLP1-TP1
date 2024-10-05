@@ -15,30 +15,24 @@
 
 using namespace sf;
 
-class InfoBar{
+class InfoBar {
 public:
 	InfoBar();
 	~InfoBar();
 
-	//bool start();
 	void draw(RenderWindow *window);
 	void InfoBarUpdate(int lives, int points, int level);
-	std::string toString1(int Lives);
-	std::string toString2(int Points);
-	std::string toString3(int Level);
+	std::string toString(int value);
 
-
-	// private:
 	int const static IBmaxNumbersOfItems = 3;
-	int Level=0, Points=0, Lives=0;
+	int Level = 0, Points = 0, Lives = 0;
 	Font font;
 	Text infoBar[IBmaxNumbersOfItems];
 	RenderWindow window;
 };
 
-
-
 #endif // INFOBAR_HPP
+
 
 
 //#include <SFML/Graphics.hpp>
