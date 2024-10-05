@@ -71,14 +71,7 @@ public:
 
 
 
-		    Font font;
-		        if (!font.loadFromFile("fonts/Pingsan.ttf")) {
-		            std::cerr << "Unable to open font" << std::endl;
-		            std::exit(EXIT_FAILURE);
-		        }
-
-
-		       infoBar = InfoBar(font); //erro ""infobar" was not declared in this scope"
+	      // infoBar = InfoBar(font); //erro ""infobar" was not declared in this scope"
 
 
 
@@ -204,10 +197,11 @@ public:
 		window->draw(background_sprite);
 		drawPlatforms(*window);
 		player.draw(window);
+		infoBar.draw(window);
 
 
-		infoBar.update(lives, points, level); //erro - o mesmo do de cima
-		infoBar.draw(window); //erro - argumento invalido
+//		infoBar.update(lives, points, level); //erro - o mesmo do de cima
+//		infoBar.draw(window); //erro - argumento invalido
 
 
 		window->display();
