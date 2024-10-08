@@ -324,6 +324,10 @@ public:
 			dificult++;
 
 			player.lives++;
+			if(points >= enemies.size()){
+				player.lives++;
+			}
+			points = 0;
 		}
 	}
 
