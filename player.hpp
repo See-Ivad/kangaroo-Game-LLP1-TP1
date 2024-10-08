@@ -201,7 +201,7 @@ public:
 				|| Keyboard::isKeyPressed(Keyboard::Up)
 				|| Keyboard::isKeyPressed(Keyboard::Space)) && velocity.y == 0
 				&& !tryingCrouching && isGrounded) {
-			velocity.y += TILE_SIZE * -24;
+			velocity.y += TILE_SIZE * -12;
 			isGrounded = false;
 			jump_sound.play();
 		}
@@ -215,7 +215,7 @@ public:
 	}
 
 	bool move(RenderWindow *rWindow, float deltaTime, vector<Platform*> platforms, vector<Ladder*> ladders){
-		float gravity = 3.5f;
+		float gravity = 2.0f;
 
 		isFloating(platforms, ladders);
 
@@ -282,9 +282,8 @@ public:
 	}
 
 	void updateMovables(vector<Enemy*> enemies, vector<Movable*> apples){
-
 		for(auto& apple : apples){
-			if(testCollision(apple->getBody())){
+			if(testCollision(apple->getBody()) && !isPunching){
 				lives--;
 				apple->lives--;
 				damageSound.play();

@@ -97,31 +97,30 @@ public:
 
 		if(map == 0){
 			mapMatrix = {
-					"XXXXXXXXXXXXXXXXXXXX",
-					"XXXXXXXXXXXXXXXXXXXX",
-					"XXXXXXXXXXXXXXXXXXXX",
-					"LLLL3XXXXXXXXXXX4LLL",
-					"@@23XXXXXXXXXXXXX1LL",
-					"DdXXXXXXXXXXXXXXXX1@",
-					"TtXXJYXXXXXXXXXXXXDd",
-					"TcbbbbbXXXbbbbvvvbCt",
+					"IIIIIIIIIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
+					"IIIIIIIIIIIIIIIIIIII",
+					"LLL3XXXXXXXXXXXX1LLL",
+					"@@3XXXXXXXXXXXXXX1@@",
+					"DdXXXXXXXXXXXXXXXXDd",
+					"TtXXXYXXXXXJXXXXXXDd",
+					"TcbbbbbbbbbbbbvvvbCt",
 					"TtXXXXXXXXXXXXVVVXTt",
 					"TtXXXXXXXXXXXXVVVXTt",
 					"TtXXXXXXXXXXXXVVVXTt",
-					"TtXXXXXXXXXXXXVVV<Tt",
+					"Tt>XXXXXXXXXXXVVVXTt",
 					"Tcbvvvbbbbbbbbbb&***",
 					"TtXVVVXXXXXXXXXX1LLL",
 					"TtXVVVXXXXXXXXXXX1@@",
 					"TtXVVVXXXXXXXXXXXXDd",
-					"Tt>VVVXXXXXXXXXXXXTt",
+					"TtXVVVXXXXXXXXXX<XTt",
 					"***(bbbbbbbbbbvvvbCt",
 					"LLL3XXXXXXXXXXVVVXTt",
 					"@@3XXXXXXXXXXXVVVXTt",
 					"DdXXXXXXXXXXXXVVVXTt",
 					"Tt>XXXXXXXXXXXVVVXTt",
-					"---XPXXXXXXXXXXXX---"};
+					"--------------------"};
 		}
-		//needs to be changed - NOT FINAL
 		if(map == 1){
 			mapMatrix = {
 					"IIIIIIIIIIIIIIIIIIII",
@@ -135,20 +134,19 @@ public:
 					"TtXXXXXXXsXsXXsXsXTt",
 					"TtXXXXXXXsXsXXsXsXTt",
 					"TtXXXXXXXsXsXXsXsXTt",
-					"TtXXXXXXXsXsXXlmrXTt",
+					"Tt>XXXXXXsXsXXlmrXTt",
 					"TcbvvvXXXlmrXXXb&***",
 					"TtXsXsXXXXXXXXXX1LLL",
 					"TtXsXsXXXXXXXXXXX1@@",
 					"TtXlmrXXXXXXXXXXXXDd",
-					"TtXXXXXXXXXXXXXXXXTt",
-					"***(bbbbbbbVVVvvvbCt",
-					"LLL3XXXXXXXVVVsXsXTt",
-					"@@3XXXXXXXXVVVsXsXTt",
-					"DdXXXXXXXXXVXVlmrXTt",
-					"TtXPXXXXXXXXXVXXXXTt",
+					"TtXXXXXXXXXXXXXX<XTt",
+					"***(bbbbbbbXXXvvvbCt",
+					"LLL3XXXXXXXXXXsXsXTt",
+					"@@3XXXXXXXXXXXsXsXTt",
+					"DdXXXXXXXXXXXXlmrXTt",
+					"TtX>XXXXXXXXXXXXXXXTt",
 					"--------------------"};
 		}
-		//needs to be changed - NOT FINAL
 		if(map == 2){
 			mapMatrix = {
 					"IIIIIIIIIIIIIIIIIIII",
@@ -159,20 +157,20 @@ public:
 					"DdXXXXXXXXXXXXXXXXDd",
 					"TtXXXYXXXXXJXXXXXXDd",
 					"TcbvvvbbbbbbbbvvvbCt",
-					"TtXVVVXXXXXXXXXVVXTt",
-					"TtXVVVXXXXXXXXXVVXTt",
-					"TtXVVVXXXXXXXXXVVXTt",
-					"TtXVVVXXXXXXXXXVVXTt",
+					"TtXVVVXXXXXXXXVVVXTt",
+					"TtXVVVXXXXXXXXVVVXTt",
+					"TtXVVVXXXXXXXXVVVXTt",
+					"Tt>VVVXXXXXXXXVVVXTt",
 					"Tcbbbbvvvbbbbbbb&***",
 					"TtXXXXsXsXXXsXsX1LLL",
 					"TtXXXXsXsXXXsXsXX1@@",
 					"TtXXXXsXsXXXsXsXXXDd",
-					"TtXXXXlmrXXXsXsXXXTt",
+					"TtXXXXlmrXXXsXsX<XTt",
 					"***(XXXXsXXXsXsbbbCt",
 					"LLL3XXXXsXXXlmrXXXTt",
 					"@@3XXXXXsXXXsXXXXXTt",
 					"DdXXXXXXlmmmrXXXXXTt",
-					"TtXPXXXXXXXXXXXXXXTt",
+					"Tt>XXXXXXXXXXXXXXXTt",
 					"--------------------"};
 		}
 	}
@@ -181,21 +179,17 @@ public:
 		for(size_t i = 0; i < mapMatrix.size(); ++i){
 			for(size_t j = 0; j < 20; ++j){
 
-				if(mapMatrix[i][j] == 'P'){
-					player.setPosition(Vector2f(j * 24, (i * 24) - 24));
-				}
-				else if(mapMatrix[i][j] == 'J'){
+				if(mapMatrix[i][j] == 'J'){
 					joey.setPosition(Vector2f(j * 24, (i * 24) - 24));
 				}
-				else if(mapMatrix[i][j] != 'X' && mapMatrix[i][j] != 'I' &&
-						mapMatrix[i][j] != 'V' && mapMatrix[i][j] != 'v' &&
+				else if(mapMatrix[i][j] != 'X' &&
+						mapMatrix[i][j] != 'V' && mapMatrix[i][j] != 'v' && mapMatrix[i][j] != 's' &&
 						!(mapMatrix[i][j] == 'Y' || mapMatrix[i][j] == '<' || mapMatrix[i][j] == '>')){
 					Platform * platform = new Platform(Vector2f(j * 24, i * 24), Vector2f(24, 24));
 					platform->assignTexture(mapMatrix[i][j]);
 					platforms.push_back(platform);
 				}
-				else if(mapMatrix[i][j] != 'I' &&
-						(mapMatrix[i][j] == 'V' || mapMatrix[i][j] == 'v')){
+				else if(mapMatrix[i][j] == 'V' || mapMatrix[i][j] == 'v' || mapMatrix[i][j] == 's'){
 					Ladder * ladder = new Ladder(Vector2f(j * 24, i * 24), Vector2f(24, 24));
 					ladder->assignTexture(mapMatrix[i][j]);
 					if(mapMatrix[i][j] == 'v')
@@ -204,13 +198,14 @@ public:
 				}
 				else if(mapMatrix[i][j] == 'Y' || mapMatrix[i][j] == '<' || mapMatrix[i][j] == '>'){
 					if(mapMatrix[i][j] == 'Y'){
-						Enemy * enemy = new Enemy(Vector2f(j * 24.f, (i * 24.f) - 12.f), Vector2f( 40.f, 0.f), Vector2f(36.f, 36.f), Vector2f(0.f, 2.f));
+						Enemy * enemy = new Enemy(Vector2f(j * 24.f, (i * 24.f) - 12.f - 12.f), Vector2f( 40.f, 0.f), Vector2f(36.f, 36.f), Vector2f(0.f, 2.f));
 						enemies.push_back(enemy);
 					}else if(mapMatrix[i][j] == '<'){
-						Enemy * enemy = new Enemy(Vector2f(j * 24.f, (i * 24.f) - 12.f), Vector2f( 0.f, 0.f), Vector2f(36.f, 36.f), Vector2f(-4.f, 0.f));
+						Enemy* enemy = new Enemy(Vector2f(j * 24.f, (i * 24.f) - 12.f - 12.f), Vector2f(0.f, 0.f), Vector2f(36.f, 36.f), Vector2f(-4.f, 0.f));
+						enemy->setFacingLeft(true);
 						enemies.push_back(enemy);
 					}else{
-						Enemy * enemy = new Enemy(Vector2f(j * 24.f, (i * 24.f) - 12.f), Vector2f( 0.f, 0.f), Vector2f(36.f, 36.f), Vector2f(4.f, 0.f));
+						Enemy * enemy = new Enemy(Vector2f(j * 24.f, (i * 24.f) - 12.f - 12.f), Vector2f( 0.f, 0.f), Vector2f(36.f, 36.f), Vector2f(4.f, 0.f));
 						enemies.push_back(enemy);
 					}
 				}
@@ -251,21 +246,24 @@ public:
 			}
 		}
 
-		if((clock->getElapsedTime().asSeconds() > 1.f) && enemies.size() > 0){
+		if((clock->getElapsedTime().asSeconds() > 0.25f) && enemies.size() > 0){
 			clock->restart();
 			std::srand((std::time(nullptr)));
-			static random_device random;
-			mt19937 rng(random());
-			uniform_int_distribution<int> dist(0, 99);
-			int randNum = dist(rng);
-			 if(randNum < (30 * dificult)){
-				 uniform_int_distribution<int> dist2(0, enemies.size() - 1);
-				 int randNum = dist2(rng);
-				 apples.push_back(enemies.at(randNum)->shoot());
-				 apples.back()->setTexture(itemsTexture);
-				 apples.back()->setScale(3, 3);
-				 enemyShoot.play();
-			 }
+
+			static random_device random_device;
+			mt19937 random_number_generator(random_device());
+			uniform_int_distribution<int> distribution(0, 5);
+
+			int random_number = distribution(random_number_generator);
+			int difficulty = (level / 3) + (level % 3);
+
+			if(difficulty - random_number >= 0){
+				uniform_int_distribution<int> dist2(0, enemies.size() - 1);
+				int randNum = dist2(random_number_generator);
+				apples.push_back(enemies.at(randNum)->shoot());
+				apples.back()->setTexture(itemsTexture);
+				enemyShoot.play();
+			}
 		}
 	}
 
@@ -293,43 +291,11 @@ public:
 		window->display();
 	}
 
-	void run(){
-		game_theme.setLoop(true);
-		game_theme.play();
-		Clock time;
-		Clock randShoot;
-		while (window->isOpen()){ //Loop de eventos
-			Event event;
-			Time deltaTime;
-			deltaTime = time.restart();
-
-			while (window->pollEvent(event)){
-				if (event.type == Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape)){
-					window->close();
-					exit(EXIT_SUCCESS);
-				}
-
-				if((event.type == Event::KeyReleased) && (event.key.code == Keyboard::M)){
-					if(game_theme.getStatus() == sf::SoundSource::Status::Playing)
-						game_theme.pause();
-					else if(game_theme.getStatus() == sf::SoundSource::Status::Paused)
-						game_theme.play();
-				}
-			}
-
-			updateEnemies(deltaTime.asSeconds(), &randShoot);
-			updateApples(deltaTime.asSeconds());
-			player.player_update(window, platforms, ladders, enemies, apples, deltaTime.asSeconds());
-			updateLevel();
-			infoBar.InfoBarUpdate(player.lives, points, level );
-			render();
-		}
-	}
-
 	void updateLevel(){
 		//Vector2f position = player.getPosition();
-
 		if(joey.getGlobalBounds().intersects(player.getBody().getGlobalBounds())){
+			player.setPosition(Vector2f(3 * 24, 19 * 24));
+
 			player.isClimbing = false;
 			player.tryingClimb = false;
 			for(unsigned int i = 0; i < platforms.size(); i++){
@@ -357,16 +323,41 @@ public:
 			loadPlatforms();
 			dificult++;
 
-			cout << position.x << ", " << position.y << endl;
-
-			if(player.lives < 3){
-				player.lives++;
-			}
-			player.isClimbing = false;
-			player.tryingClimb = false;
+			player.lives++;
 		}
 	}
 
+	void run(){
+		game_theme.setLoop(true);
+		game_theme.play();
+		Clock time;
+		Clock randShoot;
+		while (window->isOpen()){ //Loop de eventos
+			Event event;
+			Time deltaTime;
+			deltaTime = time.restart();
+
+			while (window->pollEvent(event)){
+				if (event.type == Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape)){
+					window->close();
+					exit(EXIT_SUCCESS);
+				}
+
+				if((event.type == Event::KeyReleased) && (event.key.code == Keyboard::M)){
+					if(game_theme.getStatus() == sf::SoundSource::Status::Playing)
+						game_theme.pause();
+					else if(game_theme.getStatus() == sf::SoundSource::Status::Paused)
+						game_theme.play();
+				}
+			}
+			updateLevel();
+			updateEnemies(deltaTime.asSeconds(), &randShoot);
+			updateApples(deltaTime.asSeconds());
+			player.player_update(window, platforms, ladders, enemies, apples, deltaTime.asSeconds());
+			infoBar.InfoBarUpdate(player.lives, points, level );
+			render();
+		}
+	}
 
 	void finish(){
 		for(unsigned int i = 0; i < platforms.size(); i++){
@@ -374,6 +365,12 @@ public:
 		}
 		for(unsigned int i = 0; i < ladders.size(); i++){
 			delete ladders.at(i);
+		}
+		for(unsigned int i = 0; i < enemies.size(); i++){
+			delete enemies.at(i);
+		}
+		for(unsigned int i = 0; i < apples.size(); i++){
+			delete apples.at(i);
 		}
 	}
 };

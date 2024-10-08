@@ -17,8 +17,8 @@ using namespace sf;
 
 class Enemy : public Movable{
 protected:
-//	float spawn_rate = 2.0; //normal de 2s
-//	int difficulty;
+	//	float spawn_rate = 2.0; //normal de 2s
+	//	int difficulty;
 
 	Vector2f shootDirection;
 	bool isDead;
@@ -68,7 +68,7 @@ public:
 			texture_rect.top = 0;
 		}
 		sprite.setTextureRect(texture_rect);
-		sprite.setScale(facing_left ? -1.5f : 1.5f, 1.5f);
+		sprite.setScale(facing_left ? -2.0f : 2.0f, 2.0f);
 	}
 
 	bool move(RenderWindow *rWindow, float deltaTime, vector<Platform*> platforms, vector<Ladder*> ladders){
@@ -80,13 +80,13 @@ public:
 			bool collision = false;
 			if(testCollision(rWindow) || testCollision(platform->getBody())){
 				if(testCollision(platform->getBody()))
-				while(testCollision(rWindow) || testCollision(platform->getBody())){
-					if(velocity.x >= 0.f){
-						body.move(-1.f,0.f);
-					}else{
-						body.move(1.f,0.f);
+					while(testCollision(rWindow) || testCollision(platform->getBody())){
+						if(velocity.x >= 0.f){
+							body.move(-1.f,0.f);
+						}else{
+							body.move(1.f,0.f);
+						}
 					}
-				}
 				position = body.getPosition();
 				collision = true;
 			}
@@ -101,7 +101,16 @@ public:
 
 	Movable* shoot(){
 		Vector2f appleVelocity = (shootDirection * 40.f);
-		Movable * apple = new Movable(Vector2f(position.x + 6.f, position.y + 6.f ), appleVelocity, bodySize / 2.f, 1);
+
+		static random_device random_device;
+		mt19937 random_number_generator(random_device());
+		uniform_int_distribution<int> distribution(0, 1);
+
+		float heightOffset = (distribution(random_number_generator) == 0) ? -6.f : 30.f;
+
+		Movable * apple = new Movable(Vector2f(position.x + 12.f, position.y + heightOffset), appleVelocity, Vector2f(24, 24), 1);
+
+		apple->setScale(1, 1);
 		return apple;
 	}
 
@@ -116,40 +125,8 @@ public:
 			sprite.setPosition(sprite.getPosition().x + (sprite.getGlobalBounds().width), sprite.getPosition().y);
 		}
 		window->draw(sprite);
-//		window->draw(body);
+		//		window->draw(body);
 	}
-
-//	Enemy(Vector2f position, Vector2f velocity, Vector2f bodySize, int difficulty)
-//	: Movable(position, velocity, bodySize), difficulty(difficulty){
-//		loadTexture("spritesheets/enemy.png");
-//		sprite.setTexture(texture);
-//		body.setFillColor(Color::Transparent);
-//	}
-//
-//	bool rng_test(int level){
-//		static random_device random;
-//		mt19937 rng(random());
-//		uniform_int_distribution<int> dist(0, 5);
-//		int test = dist(rng);
-//
-//		difficulty = (level / 3) + (level % 3);
-//
-//		if (animation_clock.getElapsedTime().asSeconds() > spawn_rate){
-//			if(difficulty - test >= 0){
-//				cout << "opossum generated! " << test << endl;
-//				cout << "difficulty: " << difficulty << "\n" << endl;
-//				animation_clock.restart();
-//				return true;
-//			}
-//			else if(difficulty - test < 0){
-//				cout << test << endl;
-//				cout << "d.: " << difficulty << "\n" << endl;
-//				animation_clock.restart();
-//				return false;
-//			}
-//		}
-//		return false;
-//	}
 };
 
 #endif /* OPOSSUM_HPP_ */
