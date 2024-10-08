@@ -19,12 +19,12 @@ Menu::Menu(){
 	sprite.setScale(2.0f, 2.0f);
 
 	menu[0].setFont(font);
-	menu[0].setColor(Color{0xDA4824FF}); //red
+	menu[0].setFillColor(Color{0xDA4824FF}); //red
 	menu[0].setString("Play");
 	menu[0].setPosition(Vector2f(480 / 2, 552 / 3 * 1));
 
 	menu[1].setFont(font);
-	menu[1].setColor(Color{0xDADA91FF}); //white
+	menu[1].setFillColor(Color{0xDADA91FF}); //white
 	menu[1].setString("Exit");
 	menu[1].setPosition(Vector2f(480 / 2, (552 / 3) * 2.3));
 

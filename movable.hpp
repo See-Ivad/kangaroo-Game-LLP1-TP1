@@ -7,15 +7,20 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
+#include "platforms.hpp"
+#include "ladder.hpp"
+
 using namespace std;
 using namespace sf;
 
 class Movable{
 protected:
+
 	Vector2f position;
 	Vector2f velocity;
 	RectangleShape body;
 	Vector2f bodySize;
+	bool isGrounded;
 	const int TILE_SIZE = 24;
 	bool facing_left = false;
 
@@ -25,22 +30,27 @@ protected:
 
 	Texture texture;
 	Sprite sprite;
+
 public:
+	int lives;
+
 	Movable();
 
-	Movable(Vector2f position, Vector2f velocity, Vector2f bodySize){
+	Movable(Vector2f position, Vector2f velocity, Vector2f bodySize, int lives){
 		this->position = position;
 		this->velocity = velocity;
 		this->body.setPosition(this->position);
 		this->body.setSize(bodySize);
 		this->bodySize = bodySize;
+		isGrounded = false;
+		this->lives = lives;
 	}
 
 	bool testCollision(RenderWindow *rWindow){ //with window
 
 		position = body.getPosition();
 		if((position.x + body.getSize().x) >= 480.f || position.x <= 0 || (position.y + body.getSize().y) >= 552 || position.y <= 0){
-			cout << "nÃ£o ta na janela" << endl;
+			cout << "não ta na janela" << endl;
 			return true;
 		}else{
 			return false;
@@ -57,6 +67,24 @@ public:
 		}
 	}
 
+	void isFloating(vector<Platform*> platforms, vector<Ladder*> ladders){
+
+		FloatRect testDummy = body.getGlobalBounds();
+		testDummy.top += 5;
+		int i = 0;
+		if((testDummy.top + testDummy.height) <= 552){
+			for(auto &platform : platforms)
+				if(platform->getBody().getGlobalBounds().intersects(testDummy) && platform->solid)
+					i++;
+			for(auto &ladder : ladders)
+				if((ladder->getBody().getGlobalBounds().intersects(testDummy)) && ladder->halfSolid)
+					i++;
+
+			if(i==0)
+				isGrounded = false;
+		}
+	}
+
 	float deltaTimeGetter(){
 		static auto last_frame_time = chrono::steady_clock::now();
 		auto current_frame_time = chrono::steady_clock::now();
@@ -67,10 +95,10 @@ public:
 		return delta.count();
 	}
 
-
-
 	void loadTexture(string filename){
 		if (!texture.loadFromFile(filename)){
+			std::cerr << "Unable to open \"audio/04-angel_island_zone-act_2.ogg\"" << std::endl;
+			std::exit(EXIT_FAILURE);
 		}
 		body.setTexture(&texture);
 	}
@@ -100,8 +128,6 @@ public:
 		sprite.setTextureRect(texture_rect);
 		sprite.setScale(facing_left ? -2.0f : 2.0f, 2.0f);
 	}
-
-
 
 	void setOriginMiddle(){
 		Vector2f sizeBody = body.getSize();
@@ -133,8 +159,24 @@ public:
 		this->velocity = velocity;
 	}
 
-	void setTexture(const Texture& texture){
-		body.setTexture(&texture);
+	void setPosition(const Vector2f& position){
+		this->position = position;
+		body.setPosition(this->position);
+	}
+
+	void setScale(int x, int y){
+		body.setScale(Vector2f(x,y));
+	}
+
+	void setTexture(Texture& texture){
+		texture_rect.top = 0;
+		texture_rect.left = 0;
+		texture_rect.width = 12;
+		texture_rect.height = 12;
+		body.setTexture(&texture, true);
+		body.setTextureRect(texture_rect);
+		sprite.setTexture(texture);
+		sprite.setTextureRect(texture_rect);
 	}
 
 	bool isFacingLeft(){
@@ -161,12 +203,12 @@ public:
 //		window->draw(body);
 	}
 
-	void update(RenderWindow *rWindow){
-		float deltaTime = deltaTimeGetter();
+	void update(RenderWindow *rWindow, float deltaTime){
 		Vector2f movement(velocity.x * deltaTime, velocity.y * deltaTime);
 		body.move(movement);
-
-		changeSpriteTextures();
+		position = body.getPosition();
+		sprite.setPosition(position);
+//		changeSpriteTextures();
 		draw(rWindow);
 	}
 };

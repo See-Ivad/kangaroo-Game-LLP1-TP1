@@ -11,6 +11,7 @@ public:
 	Vector2f position;
 	RectangleShape block;
 	const int BLOCK_SIZE = 12;
+	bool solid;
 
 	Texture texture;
 	Sprite sprite;
@@ -20,6 +21,7 @@ public:
 		this->position = position;
 		this->block.setPosition(this->position);
 		this->block.setSize(blockSize);
+		solid = true;
 		block.setFillColor(Color::Transparent);
 		block.setTexture(&texture);
 		sprite.setTexture(texture);
@@ -37,101 +39,126 @@ public:
 		block.setTexture(&texture);
 	}
 
-	void assignTexture(char type){
-		IntRect texture_rect;
-		texture_rect.width = BLOCK_SIZE;
-		texture_rect.height = BLOCK_SIZE;
+	void assignTexture(char type) {
+	    IntRect texture_rect;
+	    texture_rect.width = BLOCK_SIZE;
+	    texture_rect.height = BLOCK_SIZE;
 
-		switch(type){
-		//tree trunks
-		case 'T':
-			texture_rect.top = BLOCK_SIZE * 3;
-			texture_rect.left = 0;
-			break;
-		case 't':
-			texture_rect.top = BLOCK_SIZE * 3;
-			texture_rect.left = BLOCK_SIZE;
-			break;
+	    switch (type) {
+	        // tree trunks
+	        case 'T':
+	            texture_rect.top = BLOCK_SIZE * 3;
+	            texture_rect.left = 0;
+	            break;
+	        case 't':
+	            texture_rect.top = BLOCK_SIZE * 3;
+	            texture_rect.left = BLOCK_SIZE;
+	            break;
+	        case 'C':
+	            texture_rect.top = BLOCK_SIZE * 4;
+	            texture_rect.left = 0;
+	            break;
+	        case 'c':
+	            texture_rect.top = BLOCK_SIZE * 4;
+	            texture_rect.left = BLOCK_SIZE;
+	            break;
+	        case 'D':
+	            texture_rect.top = BLOCK_SIZE * 3;
+	            texture_rect.left = BLOCK_SIZE * 3;
+	            break;
+	        case 'd':
+	            texture_rect.top = BLOCK_SIZE * 3;
+	            texture_rect.left = BLOCK_SIZE * 4;
+	            break;
 
-		case 'C':
-			texture_rect.top = BLOCK_SIZE * 4;
-			texture_rect.left = 0;
-			break;
-		case 'c':
-			texture_rect.top = BLOCK_SIZE * 4;
-			texture_rect.left = BLOCK_SIZE;
-			break;
+	        // main leaf texture
+	        case 'L':
+	            texture_rect.top = BLOCK_SIZE * 2;
+	            texture_rect.left = BLOCK_SIZE * 16;
+	            break;
 
-		case 'D':
-			texture_rect.top = BLOCK_SIZE * 3;
-			texture_rect.left = BLOCK_SIZE * 3;
-			break;
-		case 'd':
-			texture_rect.top = BLOCK_SIZE * 3;
-			texture_rect.left = BLOCK_SIZE * 4;
-			break;
+	        // no background leaves
+	        case '1':
+	            texture_rect.top = BLOCK_SIZE * 4;
+	            texture_rect.left = BLOCK_SIZE * 14;
+	            break;
+	        case '2':
+	            texture_rect.top = BLOCK_SIZE * 4;
+	            texture_rect.left = BLOCK_SIZE * 16;
+	            break;
+	        case '3':
+	            texture_rect.top = BLOCK_SIZE * 4;
+	            texture_rect.left = BLOCK_SIZE * 18;
+	            break;
+	        case '4':
+	            texture_rect.top = BLOCK_SIZE * 2;
+	            texture_rect.left = BLOCK_SIZE * 14;
+	            break;
 
-			//main leaf texture
-		case 'L':
-			texture_rect.top = BLOCK_SIZE * 2;
-			texture_rect.left = BLOCK_SIZE * 16;
-			break;
+	        // leaves + trees
+	        case '@':
+	            texture_rect.top = BLOCK_SIZE * 4;
+	            texture_rect.left = BLOCK_SIZE * 28;
+	            break;
+	        case '&':
+	            texture_rect.top = 0;
+	            texture_rect.left = BLOCK_SIZE * 26;
+	            break;
+	        case '*':
+	            texture_rect.top = 0;
+	            texture_rect.left = BLOCK_SIZE * 28;
+	            break;
+	        case '(':
+	            texture_rect.top = 0;
+	            texture_rect.left = BLOCK_SIZE * 30;
+	            break;
 
-			//no background leaves
-		case '1':
-			texture_rect.top = BLOCK_SIZE * 4;
-			texture_rect.left = BLOCK_SIZE * 14;
-			break;
-		case '2':
-			texture_rect.top = BLOCK_SIZE * 4;
-			texture_rect.left = BLOCK_SIZE * 16;
-			break;
-		case '3':
-			texture_rect.top = BLOCK_SIZE * 4;
-			texture_rect.left = BLOCK_SIZE * 18;
-			break;
-		case '4':
-			texture_rect.top = BLOCK_SIZE * 2;
-			texture_rect.left = BLOCK_SIZE * 14;
-			break;
+	        // ladders
+	        case 'v':
+	            texture_rect.top = BLOCK_SIZE * 2;
+	            texture_rect.left = BLOCK_SIZE;
+	            break;
+	        case 'V':
+	            texture_rect.top = BLOCK_SIZE * 2;
+	            texture_rect.left = 0;
+	            break;
 
-			//leaves + trees
-		case '@': //2
-			texture_rect.top = BLOCK_SIZE * 4;
-			texture_rect.left = BLOCK_SIZE * 28;
-			break;
-		case '&': //7
-			texture_rect.top = 0;
-			texture_rect.left = BLOCK_SIZE * 26;
-			break;
-		case '*': //8
-			texture_rect.top = 0;
-			texture_rect.left = BLOCK_SIZE * 28;
-			break;
-		case '(': //9
-			texture_rect.top = 0;
-			texture_rect.left = BLOCK_SIZE * 30;
-			break;
+	        // suspended platforms
+	        case 's':
+	            texture_rect.top = BLOCK_SIZE * 5;
+	            texture_rect.left = BLOCK_SIZE * 2;
+	            solid = false;
+	            break;
+	        case 'l':
+	            texture_rect.top = BLOCK_SIZE * 6;
+	            texture_rect.left = BLOCK_SIZE * 2;
+	            solid = false;
+	            break;
+	        case 'm':
+	            texture_rect.top = BLOCK_SIZE * 6;
+	            texture_rect.left = BLOCK_SIZE * 3;
+	            break;
+	        case 'r':
+	            texture_rect.top = BLOCK_SIZE * 6;
+	            texture_rect.left = BLOCK_SIZE * 4;
+	            break;
 
-		//ladders
-		case 'v':
-			texture_rect.top = BLOCK_SIZE * 2;
-			texture_rect.left = BLOCK_SIZE;
-			break;
-		case 'V':
-			texture_rect.top = BLOCK_SIZE * 2;
-			texture_rect.left = 0;
-			break;
+	        // interface barrier
+	        case 'I':
+	            texture_rect.top = 0;
+	            texture_rect.left = BLOCK_SIZE * 3;
+	            break;
 
-		case 'b':
-			texture_rect.top = 0;
-			texture_rect.left = BLOCK_SIZE;
-			break;
-		case '-':
-			break;
-		}
-		block.setTextureRect(texture_rect);
-		sprite.setTextureRect(texture_rect);
+	        case 'b':
+	            texture_rect.top = 0;
+	            texture_rect.left = BLOCK_SIZE;
+	            break;
+	        case '-':
+	            break;
+	    }
+
+	    block.setTextureRect(texture_rect);
+	    sprite.setTextureRect(texture_rect);
 	}
 
 	void draw(RenderWindow* window){

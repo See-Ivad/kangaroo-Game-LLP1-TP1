@@ -7,9 +7,9 @@ using namespace sf;
 
 class Ladder : public Platform{
 public:
+
 	bool halfSolid;
 
-public:
 	Ladder();
 
 	Ladder(Vector2f position, Vector2f blockSize)

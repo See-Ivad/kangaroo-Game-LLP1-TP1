@@ -6,8 +6,7 @@
 #include <Vector>
 
 #include "movable.hpp"
-#include "platforms.hpp"
-#include "ladder.hpp"
+#include "opossum.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -24,7 +23,6 @@ public:
 	bool tryingPunching;
 	bool isClimbing;
 	bool tryingClimb;
-	bool isGrounded;
 	bool bouncingFrame;
 
 	SoundBuffer jump_buffer;
@@ -33,10 +31,16 @@ public:
 	SoundBuffer punch_buffer;
 	Sound punch_sound;
 
+	SoundBuffer damageBuffer;
+	Sound damageSound;
+
+	SoundBuffer crouchBuffer;
+	Sound crouchSound;
+
 	Clock punch_clock;
 
 	Player(Vector2f position, Vector2f velocity, Vector2f bodySize) :
-		Movable(position, velocity, bodySize) {
+		Movable(position, velocity, bodySize, 3) {
 		loadTexture("spritesheets/kangaroo.png");
 		sprite.setTexture(texture);
 		body.setFillColor(Color::White);
@@ -45,7 +49,6 @@ public:
 		isCrouching = false;
 		isPunching = false;
 		tryingPunching = false;
-		isGrounded = false;
 		isClimbing = false;
 		tryingClimb = false;
 		bouncingFrame = false;
@@ -55,6 +58,18 @@ public:
 
 		punch_buffer.loadFromFile("audio/player_punch_S3K_4F.wav");
 		punch_sound.setBuffer(punch_buffer);
+
+		if(!damageBuffer.loadFromFile("audio/player_damage_S3K_6E.wav")){
+			std::cerr << "Unable to open \"audio/player_damage_S3K_6E.wav\"" << std::endl;
+			std::exit(EXIT_FAILURE);
+		}
+		damageSound.setBuffer(damageBuffer);
+
+		if(!crouchBuffer.loadFromFile("audio/player_crouch_S3K_3A.wav")){
+			std::cerr << "Unable to open \"audio/player_crouch_S3K_3A.wav\"" << std::endl;
+			std::exit(EXIT_FAILURE);
+		}
+		crouchSound.setBuffer(crouchBuffer);
 	}
 
 	void changeSpriteTextures(){
@@ -124,7 +139,9 @@ public:
 
 			isCrouching = true;
 
-		} else if (tryingPunching || isPunching) {
+			crouchSound.play();
+
+		} else if ((tryingPunching || isPunching) && !isCrouching) {
 			texture_rect.top = TILE_SIZE;
 			texture_rect.left = TILE_SIZE * 2;
 			texture_rect.width = TILE_SIZE * 1.5;
@@ -197,25 +214,6 @@ public:
 		return true;
 	}
 
-
-	void isFloating(vector<Platform*> platforms, vector<Ladder*> ladders){
-
-		FloatRect testDummy = body.getGlobalBounds();
-		testDummy.top += 5;
-		int i = 0;
-		if((testDummy.top + testDummy.height) <= 552){
-			for(auto &platform : platforms)
-				if(platform->getBody().getGlobalBounds().intersects(testDummy))
-					i++;
-			for(auto &ladder : ladders)
-				if((ladder->getBody().getGlobalBounds().intersects(testDummy)) && ladder->halfSolid)
-					i++;
-
-			if(i==0)
-				isGrounded = false;
-		}
-	}
-
 	bool move(RenderWindow *rWindow, float deltaTime, vector<Platform*> platforms, vector<Ladder*> ladders){
 		float gravity = 3.5f;
 
@@ -245,9 +243,9 @@ public:
 		body.move(0.f,velocity.y * deltaTime);
 		for(auto &platform : platforms){
 			if(testCollision(rWindow) || testCollision(platform->getBody())){
-				if(testCollision(platform->getBody()))
+				if(testCollision(platform->getBody()) && platform->solid)
 						cout << "colisao plataforma" << endl;
-				while(testCollision(rWindow) || testCollision(platform->getBody())){
+				while(testCollision(rWindow) || (testCollision(platform->getBody()) && platform->solid)){
 					if(velocity.y >= 0.f){
 						body.move(0.f,-1.f);
 					}else{
@@ -266,9 +264,9 @@ public:
 		body.move(velocity.x * deltaTime,0.f);
 		for(auto &platform : platforms){
 			if(testCollision(rWindow) || testCollision(platform->getBody())){
-				if(testCollision(platform->getBody()))
+				if(testCollision(platform->getBody()) && platform->solid)
 						cout << "colisao plataforma" << endl;
-				while(testCollision(rWindow) || testCollision(platform->getBody())){
+				while(testCollision(rWindow) || (testCollision(platform->getBody()) && platform->solid)){
 					if(velocity.x >= 0.f){
 						body.move(-1.f,0.f);
 					}else{
@@ -283,11 +281,29 @@ public:
 		return true;
 	}
 
-	void player_update(RenderWindow *rWindow, vector<Platform*> platforms,vector<Ladder*> escada, float deltaTime){
+	void updateMovables(vector<Enemy*> enemies, vector<Movable*> apples){
+
+		for(auto& apple : apples){
+			if(testCollision(apple->getBody())){
+				lives--;
+				apple->lives--;
+				damageSound.play();
+			}
+		}
+
+		for(auto& enemy : enemies){
+			if(sprite.getGlobalBounds().intersects(enemy->getBody().getGlobalBounds()) && isPunching){
+				enemy->lives--;
+			}
+		}
+	}
+
+	void player_update(RenderWindow *rWindow, vector<Platform*> platforms,vector<Ladder*> ladders, vector<Enemy*> enemies, vector<Movable*> apples, float deltaTime){
 
 		controls(rWindow, deltaTime);
 		changeSpriteTextures();
-		move(rWindow, deltaTime, platforms, escada);
+		move(rWindow, deltaTime, platforms, ladders);
+		updateMovables(enemies,apples);
 		changeHitBoxSize();
 		draw(rWindow);
 	}

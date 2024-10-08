@@ -6,6 +6,7 @@
 #include "opossum.hpp"
 #include "platforms.hpp"
 #include "ladder.hpp"
+#include "infoBar.hpp"
 #include <vector>
 
 using namespace std;
@@ -13,24 +14,34 @@ using namespace sf;
 
 class Game{
 private:
-	Vector2f windowSize;
-	RenderWindow * window;
 
+	Vector2f windowSize;
 	Vector2f position;
 	Vector2f velocity;
 	Vector2f size;
 	Player player;
+	int level;
+	int points;
+	InfoBar infoBar;
+	RenderWindow * window;
+
+	RectangleShape joey;
+
+	float dificult;
+
 	vector<Platform *> platforms;
 	vector<Ladder *> ladders;
 	vector<Enemy *> enemies;
+	vector<Movable *> apples;
 	vector<string> mapMatrix;
 
+	Texture itemsTexture;
 	Texture background_texture;
 	Sprite background_sprite;
-	int level;
-	int points;
 
 	Music game_theme;
+	SoundBuffer enemyShootBuffer;
+	Sound enemyShoot;
 
 public:
 	Game(RenderWindow* rWindow) :
@@ -40,7 +51,8 @@ public:
 		size(48, 48),
 		player(position, velocity, size),
 		level(0),
-		points(0)
+		points(0),
+		dificult(1.f)
 	{
 		window = rWindow;
 
@@ -51,6 +63,11 @@ public:
 		background_sprite.setTexture(background_texture);
 		background_sprite.setScale(2.0f, 2.0f);
 
+		if(!itemsTexture.loadFromFile("spritesheets/items.png")){
+			std::cerr << "Unable to open \"spritesheets/items.png\"" << std::endl;
+			std::exit(EXIT_FAILURE);
+		}
+
 		defineMapMatrix();
 		loadPlatforms();
 
@@ -58,6 +75,21 @@ public:
 			std::cerr << "Unable to open \"audio/04-angel_island_zone-act_2.ogg\"" << std::endl;
 			std::exit(EXIT_FAILURE);
 		}
+
+		if(!enemyShootBuffer.loadFromFile("audio/enemy_throw_S3K_65.wav")){
+			std::cerr << "Unable to open \"audio/enemy_throw_S3K_65.wav\"" << std::endl;
+			std::exit(EXIT_FAILURE);
+		}
+		enemyShoot.setBuffer(enemyShootBuffer);
+
+		joey.setTexture(&itemsTexture, true);
+		joey.setSize(Vector2f(48.f,48.f));
+		IntRect textureRect;
+		textureRect.top = 72;
+		textureRect.left = 24;
+		textureRect.height = 24;
+		textureRect.width = 24;
+		joey.setTextureRect(textureRect);
 	}
 
 	void defineMapMatrix(){
@@ -71,76 +103,76 @@ public:
 					"LLLL3XXXXXXXXXXX4LLL",
 					"@@23XXXXXXXXXXXXX1LL",
 					"DdXXXXXXXXXXXXXXXX1@",
-					"TtXXXXXXXXXXXXXXXXDd",
+					"TtXXJYXXXXXXXXXXXXDd",
 					"TcbbbbbXXXbbbbvvvbCt",
 					"TtXXXXXXXXXXXXVVVXTt",
 					"TtXXXXXXXXXXXXVVVXTt",
 					"TtXXXXXXXXXXXXVVVXTt",
-					"TtXXXXXXXXXXXXVVVXTt",
+					"TtXXXXXXXXXXXXVVV<Tt",
 					"Tcbvvvbbbbbbbbbb&***",
 					"TtXVVVXXXXXXXXXX1LLL",
 					"TtXVVVXXXXXXXXXXX1@@",
 					"TtXVVVXXXXXXXXXXXXDd",
-					"TtXVVVXXXXXXXXXXXXTt",
+					"Tt>VVVXXXXXXXXXXXXTt",
 					"***(bbbbbbbbbbvvvbCt",
 					"LLL3XXXXXXXXXXVVVXTt",
 					"@@3XXXXXXXXXXXVVVXTt",
 					"DdXXXXXXXXXXXXVVVXTt",
-					"TtXXXXXXXXXXXXVVVXTt",
-					"---XXXXXXXXXXXXXX---"};
+					"Tt>XXXXXXXXXXXVVVXTt",
+					"---XPXXXXXXXXXXXX---"};
 		}
 		//needs to be changed - NOT FINAL
 		if(map == 1){
 			mapMatrix = {
-					"-IIIIIIIIIIIIIIIIIII",
 					"IIIIIIIIIIIIIIIIIIII",
 					"IIIIIIIIIIIIIIIIIIII",
-					"LLLL3XXXXXXXXXX4LLLL",
-					"@@23XXXXXXXXXXX1LLLL",
-					"DdXXXXXXXXXXXXXX12@@",
-					"TtXXXXXXXXXXXXvvvXDd",
+					"IIIIIIIIIIIIIIIIIIII",
+					"LLL3XXXXXXXXXXXX1LLL",
+					"@@3XXXXXXXXXXXXXX1@@",
+					"DdXXXXXXXXXXXXXXXXDd",
+					"TtXXXYXXXXXJXXXXXXDd",
 					"TcbbbbbbbbbbbbvvvbCt",
+					"TtXXXXXXXsXsXXsXsXTt",
+					"TtXXXXXXXsXsXXsXsXTt",
+					"TtXXXXXXXsXsXXsXsXTt",
+					"TtXXXXXXXsXsXXlmrXTt",
+					"TcbvvvXXXlmrXXXb&***",
+					"TtXsXsXXXXXXXXXX1LLL",
+					"TtXsXsXXXXXXXXXXX1@@",
+					"TtXlmrXXXXXXXXXXXXDd",
 					"TtXXXXXXXXXXXXXXXXTt",
-					"TtXXXXXXXXXXXXXXXXTt",
-					"TtXXXXXXXXXXXXXXXXTt",
-					"TtXvvvXXXXXXXXXXXXTt",
-					"Tcbvvvbbbbbbbbbb&***",
-					"TtXXXXXXXXXXXXXX1LLL",
-					"TtXXXXXXXXXXXXXXX1@@",
-					"TtXXXXXXXXXXXXXXXXDd",
-					"TtXXXXXXXXXXXXvvvXTt",
-					"***(bbbbbbbbbbvvvbCt",
-					"LLL3XXXXXXXXXXXXXXTt",
-					"@@3XXXXXXXXXXXXXXXTt",
-					"DdXXXXXXXXXXXXXXXXTt",
-					"TtXXXXXXXXXXXXXXXXTt",
+					"***(bbbbbbbVVVvvvbCt",
+					"LLL3XXXXXXXVVVsXsXTt",
+					"@@3XXXXXXXXVVVsXsXTt",
+					"DdXXXXXXXXXVXVlmrXTt",
+					"TtXPXXXXXXXXXVXXXXTt",
 					"--------------------"};
 		}
 		//needs to be changed - NOT FINAL
 		if(map == 2){
 			mapMatrix = {
-					"I-IIIIIIIIIIIIIIIIII",
 					"IIIIIIIIIIIIIIIIIIII",
 					"IIIIIIIIIIIIIIIIIIII",
-					"LLLL3XXXXXXXXXX4LLLL",
-					"@@23XXXXXXXXXXX1LLLL",
-					"DdXXXXXXXXXXXXXX12@@",
-					"TtXXXXXXXXXXXXvvvXDd",
-					"TcbbbbbbbbbbbbvvvbCt",
-					"TtXXXXXXXXXXXXVVVXTt",
-					"TtXXXXXXXXXXXXVVVXTt",
-					"TtXXXXXXXXXXXXVVVXTt",
-					"TtXvvvXXXXXXXXXXXXTt",
-					"Tcbvvvbbbbbbbbbb&***",
-					"TtXVVVXXXXXXXXXX1LLL",
-					"TtXVVVXXXXXXXXXXX1@@",
-					"TtXVVVXXXXXXXXXXXXDd",
-					"TtXXXXXXXXXXXXXXXXTt",
-					"***(XXXXXXXXXXXXXXCt",
-					"LLL3XXXXXXXXXXXXXXTt",
-					"@@3XXXXXXXXXXXXXXXTt",
-					"DdXXXXXXXXXXXXXXXXTt",
-					"TtXXXXXXXXXXXXXXXXTt",
+					"IIIIIIIIIIIIIIIIIIII",
+					"LLL3XXXXXXXXXXXX1LLL",
+					"@@3XXXXXXXXXXXXXX1@@",
+					"DdXXXXXXXXXXXXXXXXDd",
+					"TtXXXYXXXXXJXXXXXXDd",
+					"TcbvvvbbbbbbbbvvvbCt",
+					"TtXVVVXXXXXXXXXVVXTt",
+					"TtXVVVXXXXXXXXXVVXTt",
+					"TtXVVVXXXXXXXXXVVXTt",
+					"TtXVVVXXXXXXXXXVVXTt",
+					"Tcbbbbvvvbbbbbbb&***",
+					"TtXXXXsXsXXXsXsX1LLL",
+					"TtXXXXsXsXXXsXsXX1@@",
+					"TtXXXXsXsXXXsXsXXXDd",
+					"TtXXXXlmrXXXsXsXXXTt",
+					"***(XXXXsXXXsXsbbbCt",
+					"LLL3XXXXsXXXlmrXXXTt",
+					"@@3XXXXXsXXXsXXXXXTt",
+					"DdXXXXXXlmmmrXXXXXTt",
+					"TtXPXXXXXXXXXXXXXXTt",
 					"--------------------"};
 		}
 	}
@@ -148,8 +180,16 @@ public:
 	void loadPlatforms(){
 		for(size_t i = 0; i < mapMatrix.size(); ++i){
 			for(size_t j = 0; j < 20; ++j){
-				if(mapMatrix[i][j] != 'X' && mapMatrix[i][j] != 'I' &&
-						mapMatrix[i][j] != 'V' && mapMatrix[i][j] != 'v'){
+
+				if(mapMatrix[i][j] == 'P'){
+					player.setPosition(Vector2f(j * 24, (i * 24) - 24));
+				}
+				else if(mapMatrix[i][j] == 'J'){
+					joey.setPosition(Vector2f(j * 24, (i * 24) - 24));
+				}
+				else if(mapMatrix[i][j] != 'X' && mapMatrix[i][j] != 'I' &&
+						mapMatrix[i][j] != 'V' && mapMatrix[i][j] != 'v' &&
+						!(mapMatrix[i][j] == 'Y' || mapMatrix[i][j] == '<' || mapMatrix[i][j] == '>')){
 					Platform * platform = new Platform(Vector2f(j * 24, i * 24), Vector2f(24, 24));
 					platform->assignTexture(mapMatrix[i][j]);
 					platforms.push_back(platform);
@@ -161,6 +201,18 @@ public:
 					if(mapMatrix[i][j] == 'v')
 						ladder->halfSolid = true;
 					ladders.push_back(ladder);
+				}
+				else if(mapMatrix[i][j] == 'Y' || mapMatrix[i][j] == '<' || mapMatrix[i][j] == '>'){
+					if(mapMatrix[i][j] == 'Y'){
+						Enemy * enemy = new Enemy(Vector2f(j * 24.f, (i * 24.f) - 12.f), Vector2f( 40.f, 0.f), Vector2f(36.f, 36.f), Vector2f(0.f, 2.f));
+						enemies.push_back(enemy);
+					}else if(mapMatrix[i][j] == '<'){
+						Enemy * enemy = new Enemy(Vector2f(j * 24.f, (i * 24.f) - 12.f), Vector2f( 0.f, 0.f), Vector2f(36.f, 36.f), Vector2f(-4.f, 0.f));
+						enemies.push_back(enemy);
+					}else{
+						Enemy * enemy = new Enemy(Vector2f(j * 24.f, (i * 24.f) - 12.f), Vector2f( 0.f, 0.f), Vector2f(36.f, 36.f), Vector2f(4.f, 0.f));
+						enemies.push_back(enemy);
+					}
 				}
 			}
 		}
@@ -175,10 +227,67 @@ public:
 		}
 	}
 
+	void drawEnemies(RenderWindow& window){
+		for(auto& enemy : enemies){
+			enemy->draw(&window);
+		}
+	}
+
+	void drawApples(RenderWindow& window){
+		for(auto& apple : apples){
+			apple->draw(&window);
+		}
+	}
+
+	void updateEnemies( float deltaTime, Clock* clock){
+		for(auto& enemy : enemies){
+			enemy->update(window, platforms, ladders, deltaTime);
+		}
+
+		for(unsigned int i = 0; i < enemies.size(); i++){
+			if(enemies.at(i)->lives < 1){
+				enemies.erase(enemies.begin() + i);
+				points++;
+			}
+		}
+
+		if((clock->getElapsedTime().asSeconds() > 1.f) && enemies.size() > 0){
+			clock->restart();
+			std::srand((std::time(nullptr)));
+			static random_device random;
+			mt19937 rng(random());
+			uniform_int_distribution<int> dist(0, 99);
+			int randNum = dist(rng);
+			 if(randNum < (30 * dificult)){
+				 uniform_int_distribution<int> dist2(0, enemies.size() - 1);
+				 int randNum = dist2(rng);
+				 apples.push_back(enemies.at(randNum)->shoot());
+				 apples.back()->setTexture(itemsTexture);
+				 apples.back()->setScale(3, 3);
+				 enemyShoot.play();
+			 }
+		}
+	}
+
+	void updateApples(float deltaTime){
+		for(auto& apple : apples){
+			apple->update(window, deltaTime);
+		}
+		for(unsigned int i = 0; i < apples.size(); i++){
+			if(apples.at(i)->testCollision(window) || apples.at(i)->lives < 1)
+				apples.erase(apples.begin() + i);
+		}
+	}
+
+
 	void render(){
 		window->clear();
 		window->draw(background_sprite);
+		infoBar.draw(window);
 		drawPlatforms(*window);
+		window->draw(joey);
+		drawApples(*window);
+		drawEnemies(*window);
 		player.draw(window);
 
 		window->display();
@@ -188,6 +297,7 @@ public:
 		game_theme.setLoop(true);
 		game_theme.play();
 		Clock time;
+		Clock randShoot;
 		while (window->isOpen()){ //Loop de eventos
 			Event event;
 			Time deltaTime;
@@ -207,10 +317,56 @@ public:
 				}
 			}
 
-			player.player_update(window, platforms, ladders, deltaTime.asSeconds());
+			updateEnemies(deltaTime.asSeconds(), &randShoot);
+			updateApples(deltaTime.asSeconds());
+			player.player_update(window, platforms, ladders, enemies, apples, deltaTime.asSeconds());
+			updateLevel();
+			infoBar.InfoBarUpdate(player.lives, points, level );
 			render();
 		}
 	}
+
+	void updateLevel(){
+		//Vector2f position = player.getPosition();
+
+		if(joey.getGlobalBounds().intersects(player.getBody().getGlobalBounds())){
+			player.isClimbing = false;
+			player.tryingClimb = false;
+			for(unsigned int i = 0; i < platforms.size(); i++){
+				delete platforms.at(i);
+			}
+			platforms.clear();
+
+			for(unsigned int i = 0; i < ladders.size(); i++){
+				delete ladders.at(i);
+			}
+			ladders.clear();
+
+			for(unsigned int i = 0; i < apples.size(); i++){
+				delete apples.at(i);
+			}
+			apples.clear();
+
+			for(unsigned int i = 0; i < enemies.size(); i++){
+				delete enemies.at(i);
+			}
+			enemies.clear();
+
+			level++;
+			defineMapMatrix();
+			loadPlatforms();
+			dificult++;
+
+			cout << position.x << ", " << position.y << endl;
+
+			if(player.lives < 3){
+				player.lives++;
+			}
+			player.isClimbing = false;
+			player.tryingClimb = false;
+		}
+	}
+
 
 	void finish(){
 		for(unsigned int i = 0; i < platforms.size(); i++){
