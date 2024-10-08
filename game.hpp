@@ -165,7 +165,7 @@ public:
 					"TtXXXXsXsXXXsXsX1LLL",
 					"TtXXXXsXsXXXsXsXX1@@",
 					"TtXXXXsXsXXXsXsXXXDd",
-					"TtXXXXlmrXXXsXsX<XTt",
+					"TtXXXXlmrXXXsXsXXXTt",
 					"***(XXXXsXXXsXsbbbCt",
 					"LLL3XXXXsXXXlmrXXXTt",
 					"@@3XXXXXsXXXsXXXXXTt",

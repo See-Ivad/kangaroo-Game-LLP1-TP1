@@ -180,9 +180,14 @@ public:
 
 		//crouch
 		if ((Keyboard::isKeyPressed(Keyboard::S)
-				|| Keyboard::isKeyPressed(Keyboard::Down)) && isGrounded) {
-			tryingCrouching = true;
+				|| Keyboard::isKeyPressed(Keyboard::Down))) {
 			velocity.x = 0;
+			if(isGrounded){
+				tryingCrouching = true;
+			}
+			else if(!isGrounded){
+				velocity.y += TILE_SIZE * 6;
+			}
 		}
 
 		//punch
@@ -244,7 +249,7 @@ public:
 		for(auto &platform : platforms){
 			if(testCollision(rWindow) || testCollision(platform->getBody())){
 				if(testCollision(platform->getBody()) && platform->solid)
-						cout << "colisao plataforma" << endl;
+					cout << "colisao plataforma" << endl;
 				while(testCollision(rWindow) || (testCollision(platform->getBody()) && platform->solid)){
 					if(velocity.y >= 0.f){
 						body.move(0.f,-1.f);
@@ -265,7 +270,7 @@ public:
 		for(auto &platform : platforms){
 			if(testCollision(rWindow) || testCollision(platform->getBody())){
 				if(testCollision(platform->getBody()) && platform->solid)
-						cout << "colisao plataforma" << endl;
+					cout << "colisao plataforma" << endl;
 				while(testCollision(rWindow) || (testCollision(platform->getBody()) && platform->solid)){
 					if(velocity.x >= 0.f){
 						body.move(-1.f,0.f);
