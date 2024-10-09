@@ -336,7 +336,7 @@ public:
 		game_theme.play();
 		Clock time;
 		Clock randShoot;
-		while (window->isOpen()){ //Loop de eventos
+		while(window->isOpen() && player.lives > 0){ //Loop de eventos
 			Event event;
 			Time deltaTime;
 			deltaTime = time.restart();
